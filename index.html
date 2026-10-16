@@ -1814,12 +1814,24 @@ function dayStreak(){ let n=0; const d=new Date(); if(!(S.hist[dayStr(d)]>0)) d.
 let S = load() || {};
 const FIRST_LAUNCH = !localStorage.getItem(KEY); // captured before any save()
 if(S.hearts!==undefined && S.dd===undefined){ S.dd=S.hearts; S.lifetime=S.hearts; delete S.hearts; }
-S = Object.assign({dd:0, lifetime:0, streak:0, streakDay:null, lastDay:null, happiness:70, fullness:70, thirst:70, play:70, grooming:70,
+S = Object.assign({dd:0, lifetime:0, streak:0, streakDay:null, lastDay:null, happiness:70, fullness:70, thirst:70, play:70, grooming:70, lastTick:0,
   dukeStage:"puppy", careDays:0, careDay:null,
   checks:{}, doneToday:{}, goals:[], completedLists:0, custom:[], hist:{}, reminders:[], remFired:{},
   lowSensory:false, badDay:false, tucked:false, bestBlockDrop:0,
   inv:{treats:{}, owned:[], bandana:null}}, S);
 S.inv = Object.assign({treats:{}, owned:[], bandana:null}, S.inv||{});
+function tickDecay(){
+  const now=Date.now(), last=S.lastTick||now, hrs=Math.max(0,(now-last)/3600000);
+  if(hrs>0){
+    const o=S.inv.owned;
+    S.happiness=Math.max(0,S.happiness-hrs*(o.includes("bed")?10:20)/24);
+    S.fullness=Math.max(0,S.fullness-hrs*(o.includes("foodbowl")?20:30)/24);
+    S.thirst=Math.max(0,(S.thirst===undefined?70:S.thirst)-hrs*(o.includes("waterbowl")?20:30)/24);
+    S.play=Math.max(0,(S.play===undefined?70:S.play)-hrs*(o.includes("toybasket")?10:20)/24);
+    S.grooming=Math.max(0,(S.grooming===undefined?70:S.grooming)-hrs*(o.includes("blanket")?10:20)/24);
+  }
+  S.lastTick=now; save();
+}
 (function newDay(){
   const t = dayStr();
   if(S.lastDay !== t){
@@ -1827,12 +1839,6 @@ S.inv = Object.assign({treats:{}, owned:[], bandana:null}, S.inv||{});
     S.goals.forEach(g=>{ g.count=0; g.done=false; g.day=t; });
     S.doneToday={};
     S.badDay=false;
-    const decay = S.inv.owned.includes("bed") ? 10 : 20;
-    S.happiness = Math.max(0, S.happiness - decay);
-    S.fullness = Math.max(0, S.fullness - (S.inv.owned.includes("foodbowl")?20:30));
-    S.thirst = Math.max(0, (S.thirst===undefined?70:S.thirst) - (S.inv.owned.includes("waterbowl")?20:30));
-    S.play = Math.max(0, (S.play===undefined?70:S.play) - (S.inv.owned.includes("toybasket")?10:20));
-    S.grooming = Math.max(0, (S.grooming===undefined?70:S.grooming) - (S.inv.owned.includes("blanket")?10:20));
     S.lastDay=t; save();
   }
 })();
@@ -1902,7 +1908,7 @@ function showTab(t){
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   render(); window.scrollTo(0,0); }
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-function render(){ if(TAB==="home")return vHome(); if(TAB==="lists")return vLists();
+function render(){ tickDecay(); if(TAB==="home")return vHome(); if(TAB==="lists")return vLists();
   if(TAB==="cal")return vCal(); if(TAB==="goals")return vGoals(); if(TAB==="play")return vPlay(); if(TAB==="shop")return vShop(); return vAbout(); }
 
 function petHTML(img){ return '<img class="pet" id="pet" src="'+img+'" alt="Duke" style="border-color:'+bandanaColor()+'">'; }
@@ -1921,11 +1927,11 @@ function vHome(){
   (function(){ const hs=SHOP.filter(x=>x.type==="home"&&S.inv.owned.includes(x.id)&&x.id!=="bed"); return hs.length?'<div style="font-size:13px;color:var(--muted)">🏠 '+hs.map(x=>x.emoji).join(" ")+'</div>':""; })()+
   (toys.length?'<div style="font-size:13px;color:var(--muted);margin-top:4px">🧸 '+toys.map(id=>SHOP.find(s=>s.id===id).emoji).join(" ")+'</div>':"")+
   '</div>'+
-  '<div class="level-row"><div class="level-name">😊 Happiness</div><div class="bar"><div style="width:'+S.happiness+'%"></div></div><div class="level-name">'+S.happiness+'</div></div>'+
-  '<div class="level-row"><div class="level-name">'+dukeStatus()+'</div><div class="bar"><div style="width:'+S.fullness+'%"></div></div><div class="level-name">'+S.fullness+'</div></div>'+
-  '<div class="level-row"><div class="level-name">💧 Thirst</div><div class="bar"><div style="width:'+(S.thirst===undefined?70:S.thirst)+'%"></div></div><div class="level-name">'+(S.thirst===undefined?70:S.thirst)+'</div></div>'+
-  '<div class="level-row"><div class="level-name">🎾 Play</div><div class="bar"><div style="width:'+(S.play===undefined?70:S.play)+'%"></div></div><div class="level-name">'+(S.play===undefined?70:S.play)+'</div></div>'+
-  '<div class="level-row"><div class="level-name">🧼 Fresh &amp; Tidy</div><div class="bar"><div style="width:'+(S.grooming===undefined?70:S.grooming)+'%"></div></div><div class="level-name">'+(S.grooming===undefined?70:S.grooming)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">😊 Happiness</div><div class="bar"><div style="width:'+Math.round(S.happiness)+'%"></div></div><div class="level-name">'+Math.round(S.happiness)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">'+dukeStatus()+'</div><div class="bar"><div style="width:'+Math.round(S.fullness)+'%"></div></div><div class="level-name">'+Math.round(S.fullness)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">💧 Thirst</div><div class="bar"><div style="width:'+Math.round(S.thirst===undefined?70:S.thirst)+'%\"></div></div><div class="level-name">'+Math.round(S.thirst===undefined?70:S.thirst)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">🎾 Play</div><div class="bar"><div style="width:'+Math.round(S.play===undefined?70:S.play)+'%\"></div></div><div class="level-name">'+Math.round(S.play===undefined?70:S.play)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">🧼 Fresh &amp; Tidy</div><div class="bar"><div style="width:'+Math.round(S.grooming===undefined?70:S.grooming)+'%\"></div></div><div class="level-name">'+Math.round(S.grooming===undefined?70:S.grooming)+'</div></div>'+
   '<div class="level-row"><div class="level-name">🌱 Age</div><div class="bar"><div style="width:'+ageProgress().pct+'%"></div></div><div class="level-name">'+ageProgress().label+'</div></div>'+
   '<div style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center">💵 '+S.lifetime+' earned all time</div>'+
   '<div class="stats"><div class="stat"><b>'+todayChecks+'</b><span>checks today</span></div>'+
@@ -2131,7 +2137,7 @@ function vAbout(){
   '<p><b>Duke: The Autistic Book of Lists Virtual Pet</b> turns the checklists from <i>The Autistic Book of Lists: Because Lists Work</i> into a game. '+
   'Check things off, earn <b>Duke Dollars</b> (no need to finish a whole list — every single check pays!), keep your streak alive, '+
   'and spend your Duke Dollars in the shop on treats, toys, a comfy bed, new bandanas, and little happiness boosts like bones, ear scratches, play time, and fresh water for Duke.</p>'+
-  '<p>Duke\u2019s tummy empties, he gets thirsty and a bit scruffy, and his happiness and playfulness dip each day — buy treats, fresh water, bubble baths and lake swims in the shop to keep him full, quenched and clean, play with his toys, and check off lists to keep him happy. Care for him day after day and he\u2019ll grow from a puppy into a wise old friend.</p>'+
+  '<p>Duke\u2019s tummy empties, he gets thirsty and a bit scruffy, and his happiness and playfulness trickle down through the day like an hourglass — buy treats, fresh water, bubble baths and lake swims in the shop to keep him full, quenched and clean, play with his toys, and check off lists to keep him happy. Care for him day after day and he\u2019ll grow from a puppy into a wise old friend.</p>'+
   '<p>Written by <b>April Griffin</b> and <b>Janet Sebelius</b> — two autistic artists who believe lists reduce anxiety, '+
   'lighten executive-function load, and turn \u201Call the things\u201D into one doable next step.</p>'+
   '<p style="color:var(--muted);font-size:13px">Version 2.4.0 — '+allLists().length+' lists and counting. You can add your own!</p></div>'+
@@ -3154,6 +3160,7 @@ function showWelcome(){
 applyModes(); paintHeader(); render();
 if(FIRST_LAUNCH && !S.seenWelcome) showWelcome();
 setInterval(checkReminders,30000); checkReminders();
+setInterval(()=>{ tickDecay(); if(TAB==="home") render(); },60000);
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>
 </body>
