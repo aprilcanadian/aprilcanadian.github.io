@@ -777,6 +777,11 @@ const PET_SAYS = ["Woof! One check at a time.","You are doing great.","Lists mak
 const PET_LOW = ["Duke is feeling a bit low... a treat would help!","Duke misses you. Check something off together?","A snack from the shop would cheer Duke up."];
 const BAD_SAYS = ["It\u2019s okay. Rest now. \uD83D\uDCA4","Duke is right here. No rush.","Soft day. Breathe with Duke."];
 const HUNGRY_SAYS = ["Duke's tummy is rumbling...","Feed Duke — he's hungry!","Duke is dreaming of crunchy biscuits..."];
+const THIRSTY_SAYS = ["Duke is thirsty...","A bowl of fresh water would be lovely.","Duke is dreaming of cool streams..."];
+function ageProgress(){ const d=S.careDays||0;
+  if(S.dukeStage==="puppy") return {pct:Math.round(d/14*100), label:d+"/14"};
+  if(S.dukeStage==="middle") return {pct:Math.round((d-14)/60*100), label:(d-14)+"/60"};
+  return {pct:100, label:"grown"}; }
 function dukeStatus(){ if(S.fullness<30) return "🍽️ Hungry"; if(S.fullness<70) return "🙂 A bit peckish"; return "😋 Full & happy"; }
 
 /* ---------- more lists from the book (Ch 3-10, 12-13, 20, 22-27, 29, 31) ---------- */
@@ -1801,7 +1806,7 @@ function dayStreak(){ let n=0; const d=new Date(); if(!(S.hist[dayStr(d)]>0)) d.
 let S = load() || {};
 const FIRST_LAUNCH = !localStorage.getItem(KEY); // captured before any save()
 if(S.hearts!==undefined && S.dd===undefined){ S.dd=S.hearts; S.lifetime=S.hearts; delete S.hearts; }
-S = Object.assign({dd:0, lifetime:0, streak:0, streakDay:null, lastDay:null, happiness:70, fullness:70,
+S = Object.assign({dd:0, lifetime:0, streak:0, streakDay:null, lastDay:null, happiness:70, fullness:70, thirst:70, play:70,
   dukeStage:"puppy", careDays:0, careDay:null,
   checks:{}, doneToday:{}, goals:[], completedLists:0, custom:[], hist:{}, reminders:[], remFired:{},
   lowSensory:false, badDay:false, tucked:false, bestBlockDrop:0,
@@ -1817,6 +1822,8 @@ S.inv = Object.assign({treats:{}, owned:[], bandana:null}, S.inv||{});
     const decay = S.inv.owned.includes("bed") ? 5 : 10;
     S.happiness = Math.max(0, S.happiness - decay);
     S.fullness = Math.max(0, S.fullness - 15);
+    S.thirst = Math.max(0, (S.thirst===undefined?70:S.thirst) - 15);
+    S.play = Math.max(0, (S.play===undefined?70:S.play) - 10);
     S.lastDay=t; save();
   }
 })();
@@ -1835,7 +1842,7 @@ function earnDD(n, happy){ S.dd+=n; S.lifetime+=n;
 function paintHeader(){ document.getElementById("hdr-dd").textContent="💵 "+S.dd;
   document.getElementById("hdr-streak").textContent="🔥 "+S.streak;
   const hp=document.getElementById("hdr-pet"); if(hp){ hp.style.borderColor=bandanaColor(); hp.src=petImg("idle"); } }
-function petSay(){ const a=S.badDay?BAD_SAYS:(S.fullness<30?HUNGRY_SAYS:(S.happiness<30?PET_LOW:PET_SAYS)); return a[Math.floor(Math.random()*a.length)]; }
+function petSay(){ const a=S.badDay?BAD_SAYS:(S.fullness<30?HUNGRY_SAYS:((S.thirst||70)<30?THIRSTY_SAYS:(S.happiness<30?PET_LOW:PET_SAYS))); return a[Math.floor(Math.random()*a.length)]; }
 function burst(x,y,txt){ const s=document.createElement("div"); s.className="heart-burst"; s.textContent=txt||"💵";
   s.style.left=(x-10)+"px"; s.style.top=(y-20)+"px"; document.body.appendChild(s); setTimeout(()=>s.remove(),1000); }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -1897,11 +1904,16 @@ function vHome(){
   '<div style="font-size:13px;color:var(--muted);margin-top:2px">'+dukeStageName()+'</div>'+
   '<div class="pet-say" id="pet-say">'+esc(petSay())+'</div>'+
   (S.fullness<25?'<div style="font-size:13px;color:var(--muted);margin-top:4px">🍽️ Duke\u2019s tummy is rumbling\u2026 a treat would help!</div>':"")+
+  ((S.thirst===undefined?70:S.thirst)<30?'<div style="font-size:13px;color:var(--muted);margin-top:4px">\U0001F4A7 Duke\u2019s thirsty\u2026 fresh water from the shop would help!</div>':"")+
+  ((S.play===undefined?70:S.play)<25?'<div style="font-size:13px;color:var(--muted);margin-top:4px">\U0001F3BE Duke wants to play! Grab a toy in the shop.</div>':"")+
   (S.inv.owned.includes("bed")?'<div style="font-size:13px;color:var(--muted)">🛏️ Duke loves his comfy bed</div>':"")+
   (toys.length?'<div style="font-size:13px;color:var(--muted);margin-top:4px">🧸 '+toys.map(id=>SHOP.find(s=>s.id===id).emoji).join(" ")+'</div>':"")+
   '</div>'+
   '<div class="level-row"><div class="level-name">😊 Happiness</div><div class="bar"><div style="width:'+S.happiness+'%"></div></div><div class="level-name">'+S.happiness+'</div></div>'+
   '<div class="level-row"><div class="level-name">'+dukeStatus()+'</div><div class="bar"><div style="width:'+S.fullness+'%"></div></div><div class="level-name">'+S.fullness+'</div></div>'+
+  '<div class="level-row"><div class="level-name">💧 Thirst</div><div class="bar"><div style="width:'+(S.thirst===undefined?70:S.thirst)+'%"></div></div><div class="level-name">'+(S.thirst===undefined?70:S.thirst)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">🎾 Play</div><div class="bar"><div style="width:'+(S.play===undefined?70:S.play)+'%"></div></div><div class="level-name">'+(S.play===undefined?70:S.play)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">🌱 Age</div><div class="bar"><div style="width:'+ageProgress().pct+'%"></div></div><div class="level-name">'+ageProgress().label+'</div></div>'+
   '<div style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center">💵 '+S.lifetime+' earned all time</div>'+
   '<div class="stats"><div class="stat"><b>'+todayChecks+'</b><span>checks today</span></div>'+
   '<div class="stat"><b>'+S.completedLists+'</b><span>lists finished</span></div>'+
@@ -2072,7 +2084,9 @@ function vShop(){
     setTimeout(()=>{ moodFlash=null; if(TAB==="shop"||TAB==="home") render(); },4000); });
   app.querySelectorAll("[data-play]").forEach(b=>b.onclick=(e)=>{
     const s=SHOP.find(x=>x.id===b.dataset.play);
-    S.happiness=Math.min(100,S.happiness+s.happy); markCareDay(); save(); burst(e.clientX,e.clientY,"🎾"); vShop(); });
+    S.happiness=Math.min(100,S.happiness+s.happy);
+    S.play=Math.min(100,(S.play===undefined?70:S.play)+s.happy*2);
+    markCareDay(); save(); burst(e.clientX,e.clientY,"🎾"); vShop(); });
   app.querySelectorAll("[data-wear]").forEach(b=>b.onclick=()=>{
     S.inv.bandana = S.inv.bandana===b.dataset.wear ? null : b.dataset.wear; save(); paintHeader(); vShop(); });
   app.querySelectorAll("[data-happy]").forEach(b=>b.onclick=(e)=>{
@@ -2081,14 +2095,16 @@ function vShop(){
     S.dd-=s.price;
     S.fullness=Math.min(100,S.fullness+(s.full||0));
     S.happiness=Math.min(100,S.happiness+s.happy);
-    save(); burst(e.clientX,e.clientY,s.emoji); vShop(); });
+    if(s.id==="water") S.thirst=Math.min(100,(S.thirst===undefined?70:S.thirst)+35);
+    if(s.id==="playtime") S.play=Math.min(100,(S.play===undefined?70:S.play)+25);
+    markCareDay(); save(); burst(e.clientX,e.clientY,s.emoji); vShop(); });
 }
 function vAbout(){
   app.innerHTML='<div class="card about"><h2 style="margin-top:0">📖 About Duke</h2>'+
   '<p><b>Duke: The Autistic Book of Lists Virtual Pet</b> turns the checklists from <i>The Autistic Book of Lists: Because Lists Work</i> into a game. '+
   'Check things off, earn <b>Duke Dollars</b> (no need to finish a whole list — every single check pays!), keep your streak alive, '+
   'and spend your Duke Dollars in the shop on treats, toys, a comfy bed, new bandanas, and little happiness boosts like bones, ear scratches, play time, and fresh water for Duke.</p>'+
-  '<p>Duke\u2019s tummy empties and his happiness dips a little each day — buy treats in the shop to keep him full, play with him, and check off lists to keep him happy.</p>'+
+  '<p>Duke\u2019s tummy empties, he gets thirsty, and his happiness and playfulness dip a little each day — buy treats and fresh water in the shop to keep him full and quenched, play with his toys, and check off lists to keep him happy. Care for him day after day and he\u2019ll grow from a puppy into a wise old friend.</p>'+
   '<p>Written by <b>April Griffin</b> and <b>Janet Sebelius</b> — two autistic artists who believe lists reduce anxiety, '+
   'lighten executive-function load, and turn \u201Call the things\u201D into one doable next step.</p>'+
   '<p style="color:var(--muted);font-size:13px">Version 2.4.0 — '+allLists().length+' lists and counting. You can add your own!</p></div>'+
