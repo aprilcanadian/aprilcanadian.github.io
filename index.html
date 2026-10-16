@@ -235,6 +235,99 @@
   }
   @media (prefers-reduced-motion:reduce){
     .bd-scope *, .bd-scope *::before, .bd-scope *::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important;}
+
+  /* ---------- sudoku game (play tab arcade) — every rule scoped under .sd-scope ---------- */
+  .sd-scope{--sd-ink:#264f5d; --sd-muted:#55717b; --sd-line:#a6c5cf; --sd-grid:#264f5d;
+    --sd-blue:#2e778d; --sd-blue-soft:#d9eef4; --sd-panel:#ffffff; --sd-selected:#f7dc86;
+    --sd-related:#edf6f8; --sd-same:#cce7ef; --sd-error:#b9574f; --sd-error-soft:#f9e4e0;
+    --sd-shadow:0 14px 36px rgba(28,72,85,.14); color:var(--sd-ink);}
+  .sd-scope button{font:inherit;}
+  .sd-scope button:focus-visible{outline:3px solid var(--sd-selected); outline-offset:3px;}
+  .sd-scope .sd-page{width:100%; max-width:920px; margin:0 auto;}
+  .sd-scope .sd-back{background:var(--cream); border:2px solid var(--line); border-radius:10px; padding:6px 14px; font-size:15px; font-weight:800; color:var(--green); cursor:pointer; margin-bottom:12px;}
+  .sd-scope .sd-intro{display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:16px; margin-bottom:18px;}
+  .sd-scope .sd-intro h1{margin:0 0 4px; font-size:clamp(1.7rem,5vw,2.6rem); line-height:1; letter-spacing:-.02em; color:var(--sd-ink);}
+  .sd-scope .sd-intro p{margin:0; color:var(--sd-muted); font-size:1rem;}
+  .sd-scope .sd-level-wrap{display:flex; align-items:center; gap:8px;}
+  .sd-scope .sd-level-wrap label{color:var(--sd-muted); font-weight:700;}
+  .sd-scope .sd-level-wrap select{border:1px solid var(--sd-line); background:var(--sd-panel); color:var(--sd-ink); border-radius:10px; padding:8px 10px; font-weight:700; font:inherit;}
+  .sd-scope .sd-game-shell{display:grid; grid-template-columns:minmax(300px,520px) minmax(240px,320px); justify-content:center; align-items:start; gap:22px;}
+  .sd-scope .sd-board-card{background:var(--sd-panel); padding:clamp(8px,2vw,16px); border-radius:20px; box-shadow:var(--sd-shadow);}
+  .sd-scope .sd-board{width:100%; aspect-ratio:1; display:grid; grid-template-columns:repeat(9,1fr); border:3px solid var(--sd-grid); border-radius:10px; overflow:hidden; background:var(--sd-panel);}
+  .sd-scope .sd-cell{position:relative; min-width:0; border:0; border-right:1px solid var(--sd-line); border-bottom:1px solid var(--sd-line); background:var(--sd-panel); color:var(--sd-blue); padding:0; font-size:clamp(1.1rem,4.2vw,1.8rem); font-weight:800; cursor:pointer; touch-action:manipulation;}
+  .sd-scope .sd-cell:nth-child(9n){border-right:0;}
+  .sd-scope .sd-cell:nth-child(n+73){border-bottom:0;}
+  .sd-scope .sd-cell:nth-child(9n+3), .sd-scope .sd-cell:nth-child(9n+6){border-right:3px solid var(--sd-grid);}
+  .sd-scope .sd-cell:nth-child(n+19):nth-child(-n+27), .sd-scope .sd-cell:nth-child(n+46):nth-child(-n+54){border-bottom:3px solid var(--sd-grid);}
+  .sd-scope .sd-cell.sd-given{color:var(--sd-ink);}
+  .sd-scope .sd-cell.sd-related{background:var(--sd-related);}
+  .sd-scope .sd-cell.sd-same{background:var(--sd-same);}
+  .sd-scope .sd-cell.sd-selected{background:var(--sd-selected);}
+  .sd-scope .sd-cell.sd-error{color:var(--sd-error); background:var(--sd-error-soft);}
+  .sd-scope .sd-notes{position:absolute; inset:2px; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); align-items:center; justify-items:center; font-size:clamp(.42rem,1.4vw,.68rem); font-weight:700; line-height:1; color:var(--sd-muted); pointer-events:none;}
+  .sd-scope .sd-side{display:flex; flex-direction:column; gap:13px;}
+  .sd-scope .sd-duke-card{display:grid; grid-template-columns:84px 1fr; gap:12px; align-items:center; padding:13px 15px 13px 11px; background:var(--sd-panel); border-radius:20px 20px 20px 8px; box-shadow:var(--sd-shadow);}
+  .sd-scope .sd-duke-art{width:84px; height:84px; border-radius:16px; object-fit:cover;}
+  .sd-scope .sd-duke-card strong{display:block; font-size:1.02rem; margin-bottom:3px; color:var(--sd-ink);}
+  .sd-scope .sd-duke-card p{margin:0; color:var(--sd-muted); line-height:1.35; font-size:.95rem;}
+  .sd-scope .sd-progress-row{display:flex; justify-content:space-between; gap:10px; font-size:.9rem; color:var(--sd-muted); margin-bottom:6px;}
+  .sd-scope .sd-progress-row output{font-weight:700; color:var(--sd-ink);}
+  .sd-scope .sd-track{height:8px; border-radius:99px; background:var(--sd-blue-soft); overflow:hidden;}
+  .sd-scope .sd-track span{display:block; height:100%; width:0; background:var(--sd-blue); border-radius:inherit; transition:width .25s ease;}
+  .sd-scope .sd-tools{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .sd-scope .sd-tool{min-height:48px; border:1px solid var(--sd-line); border-radius:12px; color:var(--sd-ink); background:var(--sd-panel); cursor:pointer; font-weight:700; font-size:.92rem;}
+  .sd-scope .sd-tool span{display:block; font-size:1.15rem; line-height:1; margin-bottom:2px;}
+  .sd-scope .sd-tool.sd-active{background:var(--sd-blue); color:#fff; border-color:var(--sd-blue);}
+  .sd-scope .sd-tool:disabled{opacity:.45; cursor:not-allowed;}
+  .sd-scope .sd-number-pad{display:grid; grid-template-columns:repeat(5,1fr); gap:8px;}
+  .sd-scope .sd-number{aspect-ratio:1; border:0; border-radius:11px; background:var(--sd-blue-soft); color:var(--sd-blue); font-size:1.35rem; font-weight:800; cursor:pointer;}
+  .sd-scope .sd-number:last-child{grid-column:3;}
+  .sd-scope .sd-number:disabled{opacity:.32; cursor:default;}
+  .sd-scope .sd-bottom-actions{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .sd-scope .sd-action{min-height:46px; border-radius:12px; border:1px solid var(--sd-line); background:transparent; color:var(--sd-ink); font-weight:700; cursor:pointer;}
+  .sd-scope .sd-action.sd-primary{border-color:var(--sd-blue); background:var(--sd-blue); color:#fff;}
+  .sd-scope .sd-reward-note{text-align:center; color:var(--sd-muted); margin:0; font-size:.88rem;}
+  .sd-scope .sd-toast{position:fixed; left:50%; bottom:calc(18px + env(safe-area-inset-bottom)); transform:translate(-50%,14px); z-index:60; max-width:calc(100% - 32px); background:var(--sd-ink); color:#fff; border-radius:999px; padding:10px 16px; box-shadow:var(--sd-shadow); opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; text-align:center; font-weight:700; font-size:.92rem;}
+  .sd-scope .sd-toast.sd-show{opacity:1; transform:translate(-50%,0);}
+  .sd-scope .sd-celebration{position:fixed; inset:0; z-index:70; display:none; place-items:center; background:rgba(220,238,243,.93); padding:20px;}
+  .sd-scope .sd-celebration.sd-show{display:grid;}
+  .sd-scope .sd-celebration-card{width:min(380px,100%); background:var(--sd-panel); border-radius:26px; padding:28px 24px; box-shadow:var(--sd-shadow); text-align:center;}
+  .sd-scope .sd-celebration-card .sd-duke-art{width:120px; height:120px; margin:0 auto 8px; border-radius:24px;}
+  .sd-scope .sd-celebration h2{font-size:1.9rem; margin:0 0 8px; color:var(--sd-ink);}
+  .sd-scope .sd-celebration p{margin:0 0 18px; color:var(--sd-muted);}
+  .sd-scope .sd-celebration button{width:100%; min-height:48px; border:0; border-radius:12px; background:var(--sd-blue); color:#fff; font-weight:800; font-size:1rem; cursor:pointer;}
+  /* ---------- arcade menu (play tab) ---------- */
+  .arcade-scope{max-width:640px; margin:0 auto; text-align:center;}
+  .arcade-scope h2{margin:6px 0 6px; color:var(--green);}
+  .arcade-scope .arcade-sub{color:var(--muted); margin:0 0 18px;}
+  .arcade-scope .arcade-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .arcade-scope .arcade-card{background:var(--card); border:2px solid var(--line); border-radius:18px; padding:22px 14px; cursor:pointer; display:flex; flex-direction:column; gap:6px; align-items:center; font:inherit;}
+  .arcade-scope .arcade-card:hover{border-color:var(--green);}
+  .arcade-scope .arcade-emoji{font-size:2.4rem;}
+  .arcade-scope .arcade-card strong{font-size:1.1rem; color:var(--ink);}
+  .arcade-scope .arcade-card span:last-child{font-size:.88rem; color:var(--muted);}
+  @media (max-width:760px){
+    .sd-scope .sd-game-shell{grid-template-columns:1fr; gap:16px;}
+    .sd-scope .sd-board-card{width:min(100%,540px); margin-inline:auto;}
+    .sd-scope .sd-side{width:min(100%,540px); margin-inline:auto;}
+    .sd-scope .sd-duke-card{order:2; grid-template-columns:64px 1fr;}
+    .sd-scope .sd-duke-art{width:64px; height:64px;}
+    .sd-scope .sd-progress{order:1;}
+    .sd-scope .sd-tools{order:3;}
+    .sd-scope .sd-number-pad{order:4; grid-template-columns:repeat(9,1fr); gap:5px;}
+    .sd-scope .sd-number, .sd-scope .sd-number:last-child{grid-column:auto; aspect-ratio:auto; min-height:44px; border-radius:8px; font-size:1.15rem;}
+    .sd-scope .sd-bottom-actions{order:5;}
+    .sd-scope .sd-reward-note{order:6;}
+    .sd-scope .sd-intro{grid-template-columns:1fr; gap:10px; align-items:start;}
+  }
+  @media (max-width:390px){
+    .sd-scope .sd-duke-card{display:none;}
+    .sd-scope .sd-tool{font-size:.8rem;}
+    .arcade-scope .arcade-grid{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .sd-scope *, .sd-scope *::before, .sd-scope *::after{transition:none !important;}
+  }
   }
 </style>
 </head>
@@ -1447,7 +1540,7 @@ function applyModes(){ document.body.classList.toggle("bad-day",!!S.badDay); doc
 const app=document.getElementById("app");
 let TAB="home";
 function showTab(t){
-  if(typeof bdTeardown==="function"&&TAB==="play"&&t!=="play") bdTeardown();
+  if(TAB==="play"&&t!=="play"){ if(typeof bdTeardown==="function")bdTeardown(); if(typeof sdTeardown==="function")sdTeardown(); }
   TAB=t;
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   render(); window.scrollTo(0,0); }
@@ -1676,8 +1769,29 @@ function vAbout(){
   '<a href="https://buymeacoffee.com/aprildawnart" target="_blank" rel="noopener">https://buymeacoffee.com/aprildawnart</a>.</p></div>';
   document.getElementById("ls-toggle").onclick=()=>{ S.lowSensory=!S.lowSensory; save(); applyModes(); vAbout(); };
 }
-/* ---------- block drop game (play tab) — shares Duke's wallet, treats, happiness, nap ---------- */
+/* ---------- play tab arcade: block drop + sudoku ---------- */
+var arcadeGame="arcade";
+function showArcadeGame(name){
+  if(typeof bdTeardown==="function")bdTeardown();
+  if(typeof sdTeardown==="function")sdTeardown();
+  arcadeGame=name; vPlay(); window.scrollTo(0,0);
+}
 function vPlay(){
+  if(arcadeGame==="blockdrop")return vBlockDrop();
+  if(arcadeGame==="sudoku")return vSudoku();
+  var h='<div class="arcade-scope" aria-label="Duke\u2019s arcade">';
+  h+='<h2>\uD83C\uDFAE Duke\u2019s Arcade</h2>';
+  h+='<p class="arcade-sub">Pick a game. Every game earns Duke Dollars and makes Duke happy.</p>';
+  h+='<div class="arcade-grid">';
+  h+='<button class="arcade-card" id="arcade-bd" type="button"><span class="arcade-emoji">\uD83E\uDDF1</span><strong>Duke\u2019s Block Drop</strong><span>Stack blocks, clear lines, feed Duke.</span></button>';
+  h+='<button class="arcade-card" id="arcade-sd" type="button"><span class="arcade-emoji">\uD83D\uDD22</span><strong>Duke Sudoku</strong><span>A quiet puzzle. No clock, no pressure.</span></button>';
+  h+='</div></div>';
+  app.innerHTML=h;
+  document.getElementById("arcade-bd").onclick=function(){ showArcadeGame("blockdrop"); };
+  document.getElementById("arcade-sd").onclick=function(){ showArcadeGame("sudoku"); };
+}
+/* ---------- block drop game (play tab) \u2014 shares Duke's wallet, treats, happiness, nap ---------- */
+function vBlockDrop(){
   var h='<div class="bd-scope" aria-label="Duke\'s Block Drop game"><div class="bd-shell">';
   h+='<section class="bd-stats bd-panel" aria-label="Game statistics">';
   h+='<div class="bd-stat"><span class="bd-stat-label">Score</span><strong class="bd-stat-value" id="bd-score">0</strong></div>';
@@ -1697,6 +1811,7 @@ function vPlay(){
   h+='<button class="bd-small" id="bd-pauseButton" type="button">Pause</button>';
   h+='<button class="bd-small" id="bd-resetButton" type="button">New game</button>';
   h+='<button class="bd-small bd-shopbtn" id="bd-shopButton" type="button">\uD83D\uDECD\uFE0F Shop</button>';
+h+='<button class="bd-small" id="bd-arcadeButton" type="button">\u2190 Arcade</button>';
   h+='</div><div class="bd-touch" aria-label="Touch game controls">';
   h+='<button class="bd-tbtn" data-action="left" type="button" aria-label="Move left">\u2190</button>';
   h+='<button class="bd-tbtn" data-action="rotate" type="button" aria-label="Rotate block">\u21BB</button>';
@@ -1966,6 +2081,7 @@ function bdInit(){
     next:$('bd-nextCanvas'), nctx:$('bd-nextCanvas').getContext('2d'),
     overlay:$('bd-overlay'), startButton:$('bd-startButton'),
     pauseButton:$('bd-pauseButton'), resetButton:$('bd-resetButton'), shopButton:$('bd-shopButton'),
+    arcadeButton:$('bd-arcadeButton'),
     dukeStage:$('bd-dukeStage'), dukeImage:$('bd-dukeImage'), zzz:$('bd-zzz'),
     dukeState:$('bd-dukeState'), modeButton:$('bd-modeButton'),
     happinessText:$('bd-happinessText'), happinessFill:$('bd-happinessFill'),
@@ -1979,6 +2095,7 @@ function bdInit(){
   bdEl.pauseButton.onclick=bdTogglePause;
   bdEl.resetButton.onclick=bdNewGame;
   bdEl.shopButton.onclick=function(){ showTab('shop'); };
+  bdEl.arcadeButton.onclick=function(){ showArcadeGame("arcade"); };
   bdEl.modeButton.onclick=bdToggleDuke;
   root.querySelectorAll('.bd-tbtn').forEach(function(btn){
     var action=btn.getAttribute('data-action');
@@ -2017,6 +2134,234 @@ function bdTeardown(){
   if(bdRunning&&!bdGameOver&&!bdPaused) bdPaused=true;
   bdEl=null;
 }
+/* ---------- sudoku game (play tab arcade) — shares Duke's wallet ---------- */
+var sdEl=null, sdToastTimer=null, sdWon=false;
+var sdSolution=[5,3,4,6,7,8,9,1,2,6,7,2,1,9,5,3,4,8,1,9,8,3,4,2,5,6,7,8,5,9,7,6,1,4,2,3,4,2,6,8,5,3,7,9,1,7,1,3,9,2,4,8,5,6,9,6,1,5,3,7,2,8,4,2,8,7,4,1,9,6,3,5,3,4,5,2,8,6,1,7,9];
+var sdPuzzles={
+  gentle:"530678012602095308198042067059701420420850791013904850901530280207409035305206109",
+  steady:"530070002600195000098000060800060003400803001700020006060000280000419005300080079",
+  stretch:"000070002600005000098000060800060003400800001700020006060000280000409005300000070"};
+var sdValues=[], sdGivens=[], sdNotes=[], sdSelected=-1, sdNoteMode=false, sdHistory=[];
+function vSudoku(){
+  var h='<div class="sd-scope" aria-label="Duke Sudoku game"><div class="sd-page">';
+  h+='<button class="sd-back" id="sd-backBtn" type="button">\u2190 Arcade</button>';
+  h+='<section class="sd-intro" aria-labelledby="sd-game-title"><div>';
+  h+='<h1 id="sd-game-title">Duke Sudoku</h1><p>A quiet puzzle. No clock, no pressure.</p></div>';
+  h+='<div class="sd-level-wrap"><label for="sd-level">Puzzle</label><select id="sd-level" aria-label="Choose puzzle difficulty">';
+  h+='<option value="gentle">Gentle</option><option value="steady">Steady</option><option value="stretch">A stretch</option>';
+  h+='</select></div></section>';
+  h+='<div class="sd-game-shell">';
+  h+='<section class="sd-board-card" aria-label="Sudoku board"><div class="sd-board" id="sd-board" role="grid" aria-label="Nine by nine Sudoku puzzle"></div></section>';
+  h+='<aside class="sd-side" aria-label="Game controls">';
+  h+='<div class="sd-duke-card" aria-live="polite"><img class="sd-duke-art" src="'+petImg("happy")+'" alt="Duke">';
+  h+='<div><strong>Duke says</strong><p id="sd-dukeMessage">Pick any empty square. We\u2019ll take it one number at a time.</p></div></div>';
+  h+='<div class="sd-progress"><div class="sd-progress-row"><span>Board progress</span><output id="sd-progressText">0 of 0 filled</output></div>';
+  h+='<div class="sd-track" aria-hidden="true"><span id="sd-progressBar"></span></div></div>';
+  h+='<div class="sd-tools" aria-label="Sudoku tools">';
+  h+='<button class="sd-tool" id="sd-undoBtn" type="button"><span>\u21B6</span>Undo</button>';
+  h+='<button class="sd-tool" id="sd-eraseBtn" type="button"><span>\u232B</span>Erase</button>';
+  h+='<button class="sd-tool" id="sd-notesBtn" type="button" aria-pressed="false"><span>\u270E</span>Notes</button></div>';
+  h+='<div class="sd-number-pad" id="sd-numberPad" aria-label="Number choices"></div>';
+  h+='<div class="sd-bottom-actions">';
+  h+='<button class="sd-action" id="sd-hintBtn" type="button">Give me a hint</button>';
+  h+='<button class="sd-action sd-primary" id="sd-checkBtn" type="button">Check my board</button></div>';
+  h+='<p class="sd-reward-note">Finish the puzzle to earn 20 Duke Dollars.</p>';
+  h+='</aside></div></div>';
+  h+='<div class="sd-toast" id="sd-toast" role="status"></div>';
+  h+='<div class="sd-celebration" id="sd-celebration" role="dialog" aria-modal="true" aria-labelledby="sd-winTitle">';
+  h+='<div class="sd-celebration-card"><img class="sd-duke-art" src="'+petImg("happy")+'" alt="Duke">';
+  h+='<h2 id="sd-winTitle">You did it!</h2><p>Duke is proud of you. You earned 20 Duke Dollars.</p>';
+  h+='<button id="sd-playAgainBtn" type="button">Play another puzzle</button>';
+  h+='</div></div></div>';
+  app.innerHTML=h;
+  sdInit();
+}
+function sdInit(){
+  var root=document.querySelector(".sd-scope");
+  function $(id){ return root.querySelector("#"+id); }
+  sdEl={root:root, board:$("sd-board"), numberPad:$("sd-numberPad"), level:$("sd-level"),
+    notesBtn:$("sd-notesBtn"), undoBtn:$("sd-undoBtn"), eraseBtn:$("sd-eraseBtn"),
+    hintBtn:$("sd-hintBtn"), checkBtn:$("sd-checkBtn"), toast:$("sd-toast"),
+    message:$("sd-dukeMessage"), progressText:$("sd-progressText"), progressBar:$("sd-progressBar"),
+    celebration:$("sd-celebration"), playAgainBtn:$("sd-playAgainBtn"), backBtn:$("sd-backBtn")};
+  var n, b;
+  for(n=1;n<=9;n++){ b=document.createElement("button"); b.type="button"; b.className="sd-number";
+    b.textContent=n; b.setAttribute("aria-label","Enter "+n); b.dataset.number=n;
+    sdEl.numberPad.appendChild(b); }
+  sdEl.board.addEventListener("click",function(e){ var c=e.target.closest(".sd-cell"); if(c) sdChooseCell(Number(c.dataset.index)); });
+  sdEl.numberPad.addEventListener("click",function(e){ var k=e.target.closest(".sd-number"); if(k&&!k.disabled) sdEnterNumber(Number(k.dataset.number)); });
+  sdEl.notesBtn.onclick=function(){
+    sdNoteMode=!sdNoteMode;
+    sdEl.notesBtn.classList.toggle("sd-active",sdNoteMode);
+    sdEl.notesBtn.setAttribute("aria-pressed",String(sdNoteMode));
+    sdSay(sdNoteMode?"Notes are on. Add the possibilities you want to remember.":"Notes are off. Your next number will fill the square.");
+  };
+  sdEl.eraseBtn.onclick=sdErase;
+  sdEl.undoBtn.onclick=sdUndo;
+  sdEl.hintBtn.onclick=sdHint;
+  sdEl.checkBtn.onclick=sdCheck;
+  sdEl.level.onchange=sdStartPuzzle;
+  sdEl.backBtn.onclick=function(){ showArcadeGame("arcade"); };
+  sdEl.playAgainBtn.onclick=function(){
+    var opts=["gentle","steady","stretch"], cur=opts.indexOf(sdEl.level.value);
+    sdEl.level.value=opts[(cur+1)%opts.length]; sdStartPuzzle();
+  };
+  sdStartPuzzle();
+}
+function sdSay(t){ if(sdEl) sdEl.message.textContent=t; }
+function sdStartPuzzle(){
+  var raw=sdPuzzles[sdEl.level.value];
+  sdValues=raw.split("").map(function(x){ return Number(x); });
+  sdGivens=sdValues.map(function(x){ return x!==0; });
+  sdNotes=[]; for(var i=0;i<81;i++) sdNotes.push([]);
+  sdHistory=[]; sdSelected=-1; sdNoteMode=false; sdWon=false;
+  sdEl.notesBtn.classList.remove("sd-active");
+  sdEl.notesBtn.setAttribute("aria-pressed","false");
+  sdEl.celebration.classList.remove("sd-show");
+  sdSay("Pick any empty square. We\u2019ll take it one number at a time.");
+  sdRender();
+}
+function sdRender(){
+  if(!sdEl) return;
+  sdEl.board.innerHTML="";
+  var selVal=sdSelected>=0?sdValues[sdSelected]:0;
+  var selRow=sdSelected>=0?Math.floor(sdSelected/9):-1, selCol=sdSelected>=0?sdSelected%9:-1;
+  for(var i=0;i<81;i++){
+    (function(i){
+      var row=Math.floor(i/9), col=i%9;
+      var cell=document.createElement("button");
+      var related=sdSelected>=0&&(row===selRow||col===selCol||(Math.floor(row/3)===Math.floor(selRow/3)&&Math.floor(col/3)===Math.floor(selCol/3)));
+      cell.type="button"; cell.className="sd-cell"; cell.dataset.index=i;
+      cell.setAttribute("role","gridcell");
+      cell.setAttribute("aria-label","Row "+(row+1)+", column "+(col+1)+(sdValues[i]?", "+sdValues[i]:", empty"));
+      if(sdGivens[i]) cell.classList.add("sd-given");
+      if(related) cell.classList.add("sd-related");
+      if(selVal&&sdValues[i]===selVal&&i!==sdSelected) cell.classList.add("sd-same");
+      if(i===sdSelected) cell.classList.add("sd-selected");
+      if(sdValues[i]){ cell.textContent=sdValues[i]; }
+      else if(sdNotes[i].length){
+        var wrap=document.createElement("span"); wrap.className="sd-notes";
+        for(var k=1;k<=9;k++){ var s=document.createElement("span"); s.textContent=sdNotes[i].indexOf(k)>=0?k:""; wrap.appendChild(s); }
+        cell.appendChild(wrap);
+      }
+      sdEl.board.appendChild(cell);
+    })(i);
+  }
+  sdUpdateProgress(); sdUpdatePad();
+  sdEl.undoBtn.disabled=sdHistory.length===0;
+  sdEl.eraseBtn.disabled=sdSelected<0||sdGivens[sdSelected]||(!sdValues[sdSelected]&&!sdNotes[sdSelected].length);
+}
+function sdUpdateProgress(){
+  var total=sdGivens.filter(function(x){ return !x; }).length;
+  var filled=sdValues.reduce(function(s,x,i){ return s+((!sdGivens[i]&&x)?1:0); },0);
+  sdEl.progressText.textContent=filled+" of "+total+" filled";
+  sdEl.progressBar.style.width=(total?filled/total*100:0)+"%";
+}
+function sdUpdatePad(){
+  var btns=sdEl.numberPad.querySelectorAll(".sd-number");
+  for(var j=0;j<btns.length;j++){
+    (function(btn){
+      var num=Number(btn.dataset.number);
+      var count=sdValues.filter(function(x){ return x===num; }).length;
+      btn.disabled=(count>=9&&!sdNoteMode);
+    })(btns[j]);
+  }
+}
+function sdSaveState(){
+  sdHistory.push({values:sdValues.slice(), notes:sdNotes.map(function(x){ return x.slice(); })});
+  if(sdHistory.length>30) sdHistory.shift();
+}
+function sdChooseCell(i){
+  sdSelected=i;
+  if(sdGivens[i]){ sdSay("That number is part of the puzzle. Try one of the open squares."); }
+  else{ sdSay(sdNoteMode?"Add any possibilities you want to remember.":"Choose the number that belongs here."); }
+  sdRender();
+}
+function sdEnterNumber(num){
+  if(sdSelected<0){ sdToast("Choose an empty square first."); return; }
+  if(sdGivens[sdSelected]){ sdToast("That square is already set."); return; }
+  sdSaveState();
+  if(sdNoteMode){
+    sdValues[sdSelected]=0;
+    var p=sdNotes[sdSelected].indexOf(num);
+    if(p>=0) sdNotes[sdSelected].splice(p,1); else sdNotes[sdSelected].push(num);
+    sdNotes[sdSelected].sort();
+  }else{
+    sdValues[sdSelected]=num; sdNotes[sdSelected]=[];
+    sdRemoveRelatedNotes(sdSelected,num);
+    if(num===sdSolution[sdSelected]) sdSay("Nice choice. Keep going at your own pace.");
+    else sdSay("That can stay for now. Use \u201CCheck my board\u201D whenever you want.");
+  }
+  sdRender(); sdCheckWin();
+}
+function sdRemoveRelatedNotes(idx,num){
+  var r=Math.floor(idx/9), c=idx%9;
+  for(var i=0;i<81;i++){
+    var ir=Math.floor(i/9), ic=i%9;
+    if(ir===r||ic===c||(Math.floor(ir/3)===Math.floor(r/3)&&Math.floor(ic/3)===Math.floor(c/3))){
+      var p=sdNotes[i].indexOf(num); if(p>=0) sdNotes[i].splice(p,1);
+    }
+  }
+}
+function sdErase(){
+  if(sdSelected<0||sdGivens[sdSelected]) return;
+  sdSaveState(); sdValues[sdSelected]=0; sdNotes[sdSelected]=[];
+  sdSay("Fresh square, fresh start."); sdRender();
+}
+function sdUndo(){
+  if(!sdHistory.length) return;
+  var prev=sdHistory.pop(); sdValues=prev.values; sdNotes=prev.notes;
+  sdSay("Undone. Nothing lost."); sdRender();
+}
+function sdHint(){
+  var target=(sdSelected>=0&&!sdGivens[sdSelected]&&sdValues[sdSelected]!==sdSolution[sdSelected])?sdSelected:-1;
+  if(target<0){ for(var i=0;i<81;i++){ if(!sdGivens[i]&&sdValues[i]!==sdSolution[i]){ target=i; break; } } }
+  if(target<0){ sdCheckWin(); return; }
+  sdSaveState(); sdSelected=target;
+  sdValues[target]=sdSolution[target]; sdNotes[target]=[];
+  sdRemoveRelatedNotes(target,sdSolution[target]);
+  sdSay("I filled one square for you. You\u2019re still doing the puzzle.");
+  sdRender(); sdCheckWin();
+}
+function sdCheck(){
+  var wrong=[], empty=0;
+  sdValues.forEach(function(x,i){ if(!x) empty++; else if(x!==sdSolution[i]) wrong.push(i); });
+  var cells=sdEl.board.querySelectorAll(".sd-cell");
+  for(var j=0;j<cells.length;j++){
+    if(wrong.indexOf(Number(cells[j].dataset.index))>=0) cells[j].classList.add("sd-error");
+  }
+  if(wrong.length){
+    sdSay("A few squares need another look. I marked them gently.");
+    sdToast(wrong.length+(wrong.length===1?" square needs":" squares need")+" another look.");
+  }else if(empty){
+    sdSay("Everything you\u2019ve entered is right so far.");
+    sdToast("Looking good \u2014 no mistakes so far.");
+  }else{ sdCheckWin(); }
+}
+function sdCheckWin(){
+  for(var i=0;i<81;i++){ if(sdValues[i]!==sdSolution[i]) return; }
+  sdWin();
+}
+function sdToast(msg){
+  if(!sdEl) return;
+  clearTimeout(sdToastTimer);
+  sdEl.toast.textContent=msg; sdEl.toast.classList.add("sd-show");
+  sdToastTimer=setTimeout(function(){ if(sdEl) sdEl.toast.classList.remove("sd-show"); },2300);
+}
+function sdWin(){
+  if(sdWon) return; sdWon=true;
+  sdSay("You finished it! Calm, clever work.");
+  earnDD(20,8);
+  if(sdEl){ sdEl.celebration.classList.add("sd-show"); sdEl.playAgainBtn.focus(); }
+}
+function sdTeardown(){ clearTimeout(sdToastTimer); sdEl=null; }
+document.addEventListener("keydown",function(e){
+  if(TAB!=="play"||arcadeGame!=="sudoku"||!sdEl) return;
+  if(/^[1-9]$/.test(e.key)){ sdEnterNumber(Number(e.key)); }
+  else if(e.key==="Backspace"||e.key==="Delete"){ e.preventDefault(); sdErase(); }
+  else if(e.key.toLowerCase()==="n"){ sdEl.notesBtn.click(); }
+});
+
 document.addEventListener('keydown',function(e){
   if(TAB!=="play"||!bdRafOn||!bdEl) return;
   var k=e.key;
