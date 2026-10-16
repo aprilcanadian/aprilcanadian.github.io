@@ -238,6 +238,7 @@
   }
   @media (prefers-reduced-motion:reduce){
     .bd-scope *, .bd-scope *::before, .bd-scope *::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important;}
+  }
 
   /* ---------- sudoku game (play tab arcade) — every rule scoped under .sd-scope ---------- */
   .sd-scope{--sd-ink:#264f5d; --sd-muted:#55717b; --sd-line:#a6c5cf; --sd-grid:#264f5d;
@@ -325,14 +326,12 @@
     .sd-scope .sd-intro{grid-template-columns:1fr; gap:10px; align-items:start;}
   }
   @media (max-width:390px){
-    .sd-scope .sd-duke-card{grid-template-columns:52px 1fr; padding:10px 12px 10px 9px;}
-    .sd-scope .sd-duke-art{width:52px; height:52px;}
+    .sd-scope .sd-duke-card{display:none;}
     .sd-scope .sd-tool{font-size:.8rem;}
     .arcade-scope .arcade-grid{grid-template-columns:1fr;}
   }
   @media (prefers-reduced-motion:reduce){
     .sd-scope *, .sd-scope *::before, .sd-scope *::after{transition:none !important;}
-  }
   }
 </style>
 </head>
