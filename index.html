@@ -1827,12 +1827,12 @@ S.inv = Object.assign({treats:{}, owned:[], bandana:null}, S.inv||{});
     S.goals.forEach(g=>{ g.count=0; g.done=false; g.day=t; });
     S.doneToday={};
     S.badDay=false;
-    const decay = S.inv.owned.includes("bed") ? 5 : 10;
+    const decay = S.inv.owned.includes("bed") ? 10 : 20;
     S.happiness = Math.max(0, S.happiness - decay);
-    S.fullness = Math.max(0, S.fullness - (S.inv.owned.includes("foodbowl")?10:15));
-    S.thirst = Math.max(0, (S.thirst===undefined?70:S.thirst) - (S.inv.owned.includes("waterbowl")?10:15));
-    S.play = Math.max(0, (S.play===undefined?70:S.play) - (S.inv.owned.includes("toybasket")?5:10));
-    S.grooming = Math.max(0, (S.grooming===undefined?70:S.grooming) - (S.inv.owned.includes("blanket")?5:10));
+    S.fullness = Math.max(0, S.fullness - (S.inv.owned.includes("foodbowl")?20:30));
+    S.thirst = Math.max(0, (S.thirst===undefined?70:S.thirst) - (S.inv.owned.includes("waterbowl")?20:30));
+    S.play = Math.max(0, (S.play===undefined?70:S.play) - (S.inv.owned.includes("toybasket")?10:20));
+    S.grooming = Math.max(0, (S.grooming===undefined?70:S.grooming) - (S.inv.owned.includes("blanket")?10:20));
     S.lastDay=t; save();
   }
 })();
@@ -2131,7 +2131,7 @@ function vAbout(){
   '<p><b>Duke: The Autistic Book of Lists Virtual Pet</b> turns the checklists from <i>The Autistic Book of Lists: Because Lists Work</i> into a game. '+
   'Check things off, earn <b>Duke Dollars</b> (no need to finish a whole list — every single check pays!), keep your streak alive, '+
   'and spend your Duke Dollars in the shop on treats, toys, a comfy bed, new bandanas, and little happiness boosts like bones, ear scratches, play time, and fresh water for Duke.</p>'+
-  '<p>Duke\u2019s tummy empties, he gets thirsty and a bit scruffy, and his happiness and playfulness dip a little each day — buy treats, fresh water, bubble baths and lake swims in the shop to keep him full, quenched and clean, play with his toys, and check off lists to keep him happy. Care for him day after day and he\u2019ll grow from a puppy into a wise old friend.</p>'+
+  '<p>Duke\u2019s tummy empties, he gets thirsty and a bit scruffy, and his happiness and playfulness dip each day — buy treats, fresh water, bubble baths and lake swims in the shop to keep him full, quenched and clean, play with his toys, and check off lists to keep him happy. Care for him day after day and he\u2019ll grow from a puppy into a wise old friend.</p>'+
   '<p>Written by <b>April Griffin</b> and <b>Janet Sebelius</b> — two autistic artists who believe lists reduce anxiety, '+
   'lighten executive-function load, and turn \u201Call the things\u201D into one doable next step.</p>'+
   '<p style="color:var(--muted);font-size:13px">Version 2.4.0 — '+allLists().length+' lists and counting. You can add your own!</p></div>'+
