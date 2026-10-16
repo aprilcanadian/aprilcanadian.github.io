@@ -333,6 +333,317 @@
   @media (prefers-reduced-motion:reduce){
     .sd-scope *, .sd-scope *::before, .sd-scope *::after{transition:none !important;}
   }
+  /* ---------- solitaire game (play tab arcade) — every rule scoped under .sl-scope ---------- */
+  .sl-scope{
+    --sl-cream:#FFF8EF;
+    --sl-paper:#FFFEFC;
+    --sl-blue:#D9EEF4;
+    --sl-blue-deep:#BBDDE7;
+    --sl-ink:#264F5D;
+    --sl-teal:#2E778D;
+    --sl-teal-dark:#245F70;
+    --sl-red:#B84C55;
+    --sl-line:#9FC9D4;
+    --sl-shadow:0 3px 10px rgba(38,79,93,.12);
+    --sl-gap:clamp(3px,1.15vw,10px);
+    --sl-radius:clamp(6px,1.3vw,10px);
+    color:var(--sl-ink);
+    font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  .sl-scope button {
+    font:inherit;
+  }
+  .sl-scope button:focus-visible, .sl-scope .sl-card:focus-visible, .sl-scope .sl-slot:focus-visible {
+    outline:3px solid var(--sl-teal);outline-offset:2px
+  }
+  .sl-scope .sl-app {
+    width:min(100%,800px);
+    margin:0 auto;
+    padding:clamp(10px,2.2vw,20px) clamp(8px,2vw,16px) 28px;
+  }
+  .sl-scope .sl-game-heading {
+    font-size:clamp(20px,3.3vw,27px);line-height:1.1;text-align:center;margin:0 0 10px;font-weight:800;color:var(--sl-ink)
+  }
+  .sl-scope .sl-utility {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:clamp(10px,2vw,17px);
+  }
+  .sl-scope .sl-controls {
+    display:flex;gap:7px;flex-wrap:wrap
+  }
+  .sl-scope .sl-control {
+    min-height:40px;
+    border:1px solid var(--sl-line);
+    background:var(--sl-paper);
+    border-radius:10px;
+    padding:7px 13px;
+    font-weight:800;
+    box-shadow:0 2px 5px rgba(38,79,93,.08);
+    cursor:pointer;
+  }
+  .sl-scope .sl-control:hover {
+    background:#F4FBFD
+  }
+  .sl-scope .sl-control:active {
+    background:var(--sl-blue);transform:translateY(1px)
+  }
+  .sl-scope .sl-control[disabled] {
+    opacity:.45;cursor:default;transform:none
+  }
+  .sl-scope .sl-mini-note {
+    font-size:12px;font-weight:700;color:#52727C;text-align:right;line-height:1.25
+  }
+  .sl-scope .sl-board {
+    width:100%;user-select:none;-webkit-user-select:none;touch-action:manipulation
+  }
+  .sl-scope .sl-top-row, .sl-scope .sl-tableau {
+    display:grid;
+    grid-template-columns:repeat(7,minmax(0,1fr));
+    gap:var(--sl-gap);
+  }
+  .sl-scope .sl-top-row {
+    align-items:start;margin-bottom:clamp(14px,3vw,25px)
+  }
+  .sl-scope .sl-stock-wrap {
+    grid-column:1
+  }
+  .sl-scope .sl-waste-wrap {
+    grid-column:2
+  }
+  .sl-scope .sl-foundations {
+    grid-column:4/8;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sl-gap)
+  }
+  .sl-scope .sl-pile, .sl-scope .sl-slot {
+    position:relative;width:100%;aspect-ratio:5/7
+  }
+  .sl-scope .sl-slot {
+    border:2px dashed #A9CCD5;
+    border-radius:var(--sl-radius);
+    background:rgba(217,238,244,.34);
+    color:#7098A3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:clamp(17px,4.2vw,30px);
+    font-weight:800;
+    cursor:pointer;
+  }
+  .sl-scope .sl-slot.sl-foundation-empty {
+    background:rgba(255,255,255,.38)
+  }
+  .sl-scope .sl-slot .sl-suit-guide {
+    opacity:.66
+  }
+  .sl-scope .sl-stock-empty::after {
+    content:"↻";font-size:clamp(20px,5vw,34px);font-weight:800;color:var(--sl-teal)
+  }
+  .sl-scope .sl-card {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:1px solid #B8C7CB;
+    border-radius:var(--sl-radius);
+    background:var(--sl-paper);
+    box-shadow:var(--sl-shadow);
+    cursor:pointer;
+    overflow:hidden;
+    padding:clamp(3px,.8vw,7px);
+    text-align:left;
+  }
+  .sl-scope .sl-card.sl-red {
+    color:var(--sl-red)
+  }
+  .sl-scope .sl-card.sl-black {
+    color:#263E46
+  }
+  .sl-scope .sl-card .sl-corner {
+    display:flex;flex-direction:column;align-items:center;width:max-content;line-height:.82;font-weight:800;font-size:clamp(11px,2.7vw,20px)
+  }
+  .sl-scope .sl-card .sl-corner .sl-suit {
+    font-size:1.02em;margin-top:3px
+  }
+  .sl-scope .sl-card .sl-corner, .sl-scope .sl-card .sl-center-suit {
+    pointer-events:none
+  }
+  .sl-scope .sl-card .sl-center-suit {
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,5vw,42px);opacity:.9
+  }
+  .sl-scope .sl-card.sl-back {
+    border:2px solid #73A9B8;
+    background:var(--sl-blue);
+    padding:4px;
+  }
+  .sl-scope .sl-card.sl-back::before {
+    content:"";
+    display:block;
+    width:100%;
+    height:100%;
+    border:1px solid rgba(46,119,141,.52);
+    border-radius:calc(var(--sl-radius) - 3px);
+    background-image:radial-gradient(circle,#7EB2C0 1.2px,transparent 1.4px);
+    background-size:9px 9px;
+  }
+  .sl-scope .sl-card.sl-selected {
+    outline:3px solid var(--sl-teal);outline-offset:2px;box-shadow:0 4px 16px rgba(46,119,141,.26)
+  }
+  .sl-scope .sl-hint-source {
+    animation:slGentlePulse 1.25s ease-in-out 2;outline:3px solid #E8B65D;outline-offset:2px
+  }
+  .sl-scope .sl-hint-dest {
+    animation:slGentlePulse 1.25s ease-in-out 2;box-shadow:inset 0 0 0 3px #E8B65D
+  }
+  @keyframes slGentlePulse{
+  0%,100%{
+  filter:none
+  }
+  50%{
+  filter:brightness(.94);transform:translateY(-2px)
+  }
+  }
+  @media (prefers-reduced-motion:reduce){
+  .sl-scope .sl-hint-source, .sl-scope .sl-hint-dest {
+    animation:none;outline:3px solid #E8B65D
+  }
+  }
+  .sl-scope .sl-tableau {
+    align-items:start;min-height:clamp(300px,62vh,560px)
+  }
+  .sl-scope .sl-tableau-pile {
+    position:relative;min-width:0;min-height:clamp(290px,60vh,545px)
+  }
+  .sl-scope .sl-tableau-pile>.sl-slot {
+    position:absolute;inset:0 auto auto 0
+  }
+  .sl-scope .sl-tableau-card {
+    inset:auto 0 auto 0;aspect-ratio:5/7;height:auto
+  }
+  .sl-scope .sl-tableau-card.sl-face-down {
+    transform:none
+  }
+  .sl-scope .sl-duke-tip {
+    width:min(100%,520px);
+    margin:2px auto 0;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    background:var(--sl-blue);
+    border:1px solid var(--sl-blue-deep);
+    border-radius:14px;
+    padding:10px 14px 10px 10px;
+  }
+  .sl-scope .sl-tip-copy {
+    min-width:0
+  }
+  .sl-scope .sl-tip-title {
+    font-size:12px;line-height:1;font-weight:800;color:var(--sl-teal);margin-bottom:5px
+  }
+  .sl-scope .sl-tip-text {
+    font-size:15px;line-height:1.25;font-weight:700
+  }
+  .sl-scope .sl-howto {
+    width:min(100%,620px);
+    margin:12px auto 0;
+    border-top:1px solid #C9DFE4;
+    padding-top:8px;
+  }
+  .sl-scope .sl-howto summary {
+    cursor:pointer;text-align:center;font-weight:800;font-size:14px;color:var(--sl-teal);list-style:none
+  }
+  .sl-scope .sl-howto summary::-webkit-details-marker {
+    display:none
+  }
+  .sl-scope .sl-howto p {
+    margin:8px auto 0;font-size:13px;line-height:1.45;color:#426873;text-align:center;max-width:570px
+  }
+  .sl-scope .sl-celebration {
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:22px;
+    background:rgba(38,79,93,.34);
+  }
+  .sl-scope .sl-celebration.sl-show {
+    display:flex
+  }
+  .sl-scope .sl-celebration-card {
+    width:min(100%,430px);
+    background:var(--sl-cream);
+    border:2px solid var(--sl-blue-deep);
+    border-radius:20px;
+    box-shadow:0 18px 60px rgba(25,65,76,.26);
+    padding:28px 24px;
+    text-align:center;
+  }
+  .sl-scope .sl-celebration-card     .sl-celebration h2 {
+    font-size:clamp(23px,6vw,34px);line-height:1.12;margin:0 0 13px
+  }
+  .sl-scope .sl-reward {
+    font-size:18px;font-weight:800;color:var(--sl-teal);margin:0 0 5px
+  }
+  .sl-scope .sl-reward-note {
+    font-size:12px;color:#587680;margin:0 0 20px
+  }
+  .sl-scope .sl-primary {
+    background:var(--sl-teal);color:white;border-color:var(--sl-teal-dark);padding:10px 18px
+  }
+  .sl-scope .sl-primary:hover {
+    background:var(--sl-teal-dark)
+  }
+  @media(max-width:500px){
+  .sl-scope .sl-app {
+    padding-left:7px;padding-right:7px
+  }
+  .sl-scope .sl-utility {
+    align-items:flex-start
+  }
+  .sl-scope .sl-controls {
+    gap:5px
+  }
+  .sl-scope .sl-control {
+    min-height:38px;padding:6px 10px;font-size:13px;border-radius:8px
+  }
+  .sl-scope .sl-mini-note {
+    font-size:10px;padding-top:3px;max-width:64px
+  }
+  .sl-scope .sl-tableau {
+    min-height:365px
+  }
+  .sl-scope .sl-tableau-pile {
+    min-height:355px
+  }
+  .sl-scope .sl-duke-tip {
+    padding:8px 10px 8px 8px;border-radius:11px;gap:8px
+  }
+  .sl-scope .sl-tip-text {
+    font-size:13px
+  }
+  .sl-scope .sl-tip-title {
+    font-size:10px
+  }
+  }
+  @media(max-width:370px){
+  .sl-scope .sl-control {
+    padding:6px 8px;font-size:12px
+  }
+  .sl-scope .sl-mini-note {
+    display:none
+  }
+  .sl-scope .sl-card {
+    padding:3px
+  }
+  .sl-scope .sl-tableau, .sl-scope .sl-tableau-pile {
+    min-height:340px
+  }
+  }
+  .sl-scope .sl-duke-art{width:78px;height:78px;margin:0 auto 12px;border-radius:18px;object-fit:cover;display:block;}
+  .sl-scope .sl-back{background:var(--cream);border:2px solid var(--line);border-radius:10px;padding:6px 14px;font-size:15px;font-weight:800;color:var(--green);cursor:pointer;margin-bottom:12px;}
 </style>
 </head>
 <body>
@@ -454,6 +765,9 @@ const SHOP = [
 {id:"bandana-purple", emoji:"💜", name:"Purple Bandana", desc:"Cozy and creative.", price:40, type:"bandana", color:"#9B59D0"},
 {id:"bandana-teal", emoji:"🩵", name:"Teal Bandana", desc:"Fresh like rain.", price:40, type:"bandana", color:"#2FBFA5"},
 {id:"bandana-rainbow", emoji:"🌈", name:"Rainbow Bandana", desc:"For the brightest list-keeper.", price:80, type:"bandana", color:"#E86AA0"},
+{id:"bandana-starlight", emoji:"🌟", name:"Starlight Bandana", desc:"Shines like a good day.", price:300, type:"bandana", color:"#F5D547"},
+{id:"bandana-diamond", emoji:"💎", name:"Diamond Bandana", desc:"For the richest list-keeper.", price:600, type:"bandana", color:"#9FD8E8"},
+{id:"bandana-royal", emoji:"👑", name:"Royal Bandana", desc:"Duke's fanciest look.", price:1000, type:"bandana", color:"#8B5CF6"},
 {id:"bone", emoji:"🦴", name:"Tasty Bone", desc:"Duke's favourite chew. Tummy +12, happiness +8.", price:8, type:"happy", full:12, happy:8},
 {id:"water", emoji:"💧", name:"Fresh Water", desc:"Cool and refreshing. Tummy +5, happiness +4.", price:3, type:"happy", full:5, happy:4},
 {id:"earscratch", emoji:"👂", name:"Ear Scratch", desc:"The spot behind the ears. Happiness +10.", price:5, type:"happy", happy:10},
@@ -1544,7 +1858,7 @@ function applyModes(){ document.body.classList.toggle("bad-day",!!S.badDay); doc
 const app=document.getElementById("app");
 let TAB="home";
 function showTab(t){
-  if(TAB==="play"&&t!=="play"){ if(typeof bdTeardown==="function")bdTeardown(); if(typeof sdTeardown==="function")sdTeardown(); }
+  if(TAB==="play"&&t!=="play"){ if(typeof bdTeardown==="function")bdTeardown(); if(typeof sdTeardown==="function")sdTeardown(); if(typeof slTeardown==="function")slTeardown(); }
   TAB=t;
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   render(); window.scrollTo(0,0); }
@@ -1773,26 +2087,30 @@ function vAbout(){
   '<a href="https://buymeacoffee.com/aprildawnart" target="_blank" rel="noopener">https://buymeacoffee.com/aprildawnart</a>.</p></div>';
   document.getElementById("ls-toggle").onclick=()=>{ S.lowSensory=!S.lowSensory; save(); applyModes(); vAbout(); };
 }
-/* ---------- play tab arcade: block drop + sudoku ---------- */
+/* ---------- play tab arcade: block drop + sudoku + solitaire ---------- */
 var arcadeGame="arcade";
 function showArcadeGame(name){
   if(typeof bdTeardown==="function")bdTeardown();
   if(typeof sdTeardown==="function")sdTeardown();
+  if(typeof slTeardown==="function")slTeardown();
   arcadeGame=name; vPlay(); window.scrollTo(0,0);
 }
 function vPlay(){
   if(arcadeGame==="blockdrop")return vBlockDrop();
   if(arcadeGame==="sudoku")return vSudoku();
+  if(arcadeGame==="solitaire")return vSolitaire();
   var h='<div class="arcade-scope" aria-label="Duke\u2019s arcade">';
   h+='<h2>\uD83C\uDFAE Duke\u2019s Arcade</h2>';
   h+='<p class="arcade-sub">Pick a game. Every game earns Duke Dollars and makes Duke happy.</p>';
   h+='<div class="arcade-grid">';
   h+='<button class="arcade-card" id="arcade-bd" type="button"><span class="arcade-emoji">\uD83E\uDDF1</span><strong>Duke\u2019s Block Drop</strong><span>Stack blocks, clear lines, feed Duke.</span></button>';
   h+='<button class="arcade-card" id="arcade-sd" type="button"><span class="arcade-emoji">\uD83D\uDD22</span><strong>Duke Sudoku</strong><span>A quiet puzzle. No clock, no pressure.</span></button>';
+  h+='<button class="arcade-card" id="arcade-sl" type="button"><span class="arcade-emoji">\uD83C\uDCCF</span><strong>Duke\u2019s Solitaire</strong><span>Classic Klondike, Duke\u2019s gentle way.</span></button>';
   h+='</div></div>';
   app.innerHTML=h;
   document.getElementById("arcade-bd").onclick=function(){ showArcadeGame("blockdrop"); };
   document.getElementById("arcade-sd").onclick=function(){ showArcadeGame("sudoku"); };
+  document.getElementById("arcade-sl").onclick=function(){ showArcadeGame("solitaire"); };
 }
 /* ---------- block drop game (play tab) \u2014 shares Duke's wallet, treats, happiness, nap ---------- */
 function vBlockDrop(){
@@ -2359,6 +2677,323 @@ function sdWin(){
   if(sdEl){ sdEl.celebration.classList.add("sd-show"); sdEl.playAgainBtn.focus(); }
 }
 function sdTeardown(){ clearTimeout(sdToastTimer); sdEl=null; }
+/* ---------- solitaire game (play tab arcade) ---------- */
+function vSolitaire(){
+  var h='<div class="sl-scope" aria-label="Duke Solitaire game"><div class="sl-app">';
+  h+='<button class="sl-back" id="sl-backBtn" type="button">\u2190 Arcade</button>';
+  h+='<h1 class="sl-game-heading">Duke Solitaire</h1>';
+  h+='<section class="sl-utility" aria-label="Game controls"><div class="sl-controls">';
+  h+='<button class="sl-control" id="sl-undoBtn" type="button" disabled>Undo</button>';
+  h+='<button class="sl-control" id="sl-newBtn" type="button">New game</button>';
+  h+='<button class="sl-control" id="sl-hintBtn" type="button">Hint</button></div>';
+  h+='<div class="sl-mini-note">Draw one<br>Unlimited turns</div></section>';
+  h+='<section class="sl-board" id="sl-board" aria-label="Klondike solitaire game">';
+  h+='<div class="sl-top-row">';
+  h+='<div class="sl-pile sl-stock-wrap" id="sl-stock" aria-label="Stock pile"></div>';
+  h+='<div class="sl-pile sl-waste-wrap" id="sl-waste" aria-label="Waste pile"></div>';
+  h+='<div class="sl-foundations" id="sl-foundations" aria-label="Foundation piles"></div>';
+  h+='</div><div class="sl-tableau" id="sl-tableau" aria-label="Tableau"></div></section>';
+  h+='<aside class="sl-duke-tip" aria-live="polite"><div class="sl-tip-copy">';
+  h+='<div class="sl-tip-title">Duke says</div><div class="sl-tip-text" id="sl-tipText">Take it one card at a time.</div>';
+  h+='</div></aside>';
+  h+='<details class="sl-howto"><summary>How to play</summary>';
+  h+='<p>Tap a card, then tap where you want it to go. Build downward in alternating colours. '
+  h+='Double-tap a top card to send it home. Only Kings can begin an empty column.</p></details>';
+  h+='</div>';
+  h+='<div class="sl-celebration" id="sl-celebration" role="dialog" aria-modal="true" aria-labelledby="sl-winTitle">';
+  h+='<div class="sl-celebration-card"><img class="sl-duke-art" src="'+petImg("happy")+'" alt="Duke">';
+  h+='<h2 id="sl-winTitle">You did it! Duke is proud of you.</h2>';
+  h+='<p class="sl-reward">You earned 20 Duke Dollars.</p>';
+  h+='<button class="sl-control sl-primary" id="sl-playAgainBtn" type="button">Play another game</button>';
+  h+='</div></div></div>';
+  app.innerHTML=h;
+  slInit();
+}
+
+    
+      
+      var slSUITS=["♠","♥","♦","♣"];
+      var slSUIT_NAMES={"♠":"spades","♥":"hearts","♦":"diamonds","♣":"clubs"};
+      var slRANKS=[null,"A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+      var slTips=[
+        "Take it one card at a time.",
+        "Kings like an empty column all to themselves.",
+        "Aces love starting fresh piles.",
+        "No rush. The cards aren't going anywhere.",
+        "Try turning over a hidden card."
+      ];
+      var slState,slHistory=[],slSelection=null,slHintMarks=null,slTipIndex=0,slLastTap={id:null,time:0};
+      var slStockEl=document.getElementById("sl-stock");
+      var slWasteEl=document.getElementById("sl-waste");
+      var slFoundationsEl=document.getElementById("sl-foundations");
+      var slTableauEl=document.getElementById("sl-tableau");
+      var slUndoBtn=document.getElementById("slUndoBtn");
+      var slCelebration=document.getElementById("slCelebration");
+
+      function slMakeDeck(){
+        var deck=[],id=0;
+        slSUITS.forEach(function(suit){
+          for(var rank=1;rank<=13;rank++) deck.push({id:"c"+(id++),suit:suit,rank:rank,up:false});
+        });
+        for(var i=deck.length-1;i>0;i--){
+          var j=Math.floor(Math.random()*(i+1));
+          var t=deck[i];deck[i]=deck[j];deck[j]=t;
+        }
+        return deck;
+      }
+      function slNewGame(){
+        var deck=slMakeDeck(),tableau=[[],[],[],[],[],[],[]];
+        for(var col=0;col<7;col++){
+          for(var row=0;row<=col;row++){
+            var card=deck.pop();
+            card.up=(row===col);
+            tableau[col].push(card);
+          }
+        }
+        slState={stock:deck,waste:[],foundations:{"♠":[],"♥":[],"♦":[],"♣":[]},tableau:tableau};
+        slHistory=[];slSelection=null;slHintMarks=null;slWon=false;slCelebration.classList.remove("sl-show");
+        slRender();
+      }
+      function slSnapshot(){return JSON.parse(JSON.stringify(slState))}
+      function slSaveState(){slHistory.push(slSnapshot());if(slHistory.length>300) slHistory.shift()}
+      function slClearTransient(){slSelection=null;slHintMarks=null}
+      function slCardColor(card){return card.suit==="♥"||card.suit==="♦"?"sl-red":"sl-black"}
+      function slDescribe(card){return slRANKS[card.rank]+" of "+slSUIT_NAMES[card.suit]}
+      function slCardButton(card,extra,handler){
+        var btn=document.createElement(handler?"button":"div");
+        if(handler)btn.type="button";
+        btn.className="sl-card "+(card.up?slCardColor(card):"sl-back")+(extra?" "+extra:"");
+        btn.dataset.cardId=card.id;
+        btn.setAttribute("aria-label",card.up?slDescribe(card):"Face-down card");
+        if(card.up){
+          btn.innerHTML='<span class="sl-corner"><span>'+slRANKS[card.rank]+'</span><span class="sl-suit">'+card.suit+'</span></span><span class="sl-center-suit" aria-hidden="true">'+card.suit+'</span>';
+        }
+        if(handler) btn.addEventListener("click",handler);
+        return btn;
+      }
+      function slIsSelected(type,pile,index){return slSelection&&slSelection.type===type&&slSelection.pile===pile&&(index===undefined||slSelection.index===index)}
+      function slSourceHintClass(type,pile,index){
+        return slHintMarks&&slHintMarks.source.type===type&&slHintMarks.source.pile===pile&&(index===undefined||slHintMarks.source.index===index)?"sl-hint-source":"";
+      }
+      function slDestHintClass(type,pile){return slHintMarks&&slHintMarks.dest.type===type&&slHintMarks.dest.pile===pile?"sl-hint-dest":""}
+      function slRender(){
+        slRenderStock();slRenderWaste();slRenderFoundations();slRenderTableau();
+        slUndoBtn.disabled=slHistory.length===0;
+        slCheckWin();
+      }
+      function slRenderStock(){
+        slStockEl.innerHTML="";
+        if(slState.stock.length){
+          var top=slState.stock[slState.stock.length-1];
+          var card=slCardButton(top,"",slDrawStock);
+          card.setAttribute("aria-label","Stock: "+slState.stock.length+" cards. Draw one card.");
+          slStockEl.appendChild(card);
+        }else{
+          var slot=document.createElement("button");
+          slot.type="button";slot.className="sl-slot stock-empty";slot.setAttribute("aria-label",slState.waste.length?"Turn waste over into stock":"Empty stock");
+          slot.addEventListener("click",slDrawStock);slStockEl.appendChild(slot);
+        }
+      }
+      function slRenderWaste(){
+        slWasteEl.innerHTML="";
+        if(!slState.waste.length){
+          var slot=document.createElement("div");slot.className="sl-slot";slot.setAttribute("aria-label","Empty waste pile");slWasteEl.appendChild(slot);return;
+        }
+        var card=slState.waste[slState.waste.length-1];
+        var cls=(slIsSelected("waste",0)?"sl-selected ":"")+slSourceHintClass("waste",0);
+        slWasteEl.appendChild(slCardButton(card,cls,function(){slTapCard({type:"waste",pile:0,index:slState.waste.length-1},card)}));
+      }
+      function slRenderFoundations(){
+        slFoundationsEl.innerHTML="";
+        slSUITS.forEach(function(suit,idx){
+          var pile=slState.foundations[suit],wrap=document.createElement("div");wrap.className="sl-pile";
+          if(pile.length){
+            var card=pile[pile.length-1];
+            var cls=(slIsSelected("foundation",idx)?"sl-selected ":"")+slSourceHintClass("foundation",idx);
+            var el=slCardButton(card,cls,function(){slTapFoundation(idx,suit,card)});
+            wrap.appendChild(el);
+          }else{
+            var slot=document.createElement("button");slot.type="button";slot.className="sl-slot foundation-empty "+slDestHintClass("foundation",idx);slot.setAttribute("aria-label","Empty "+slSUIT_NAMES[suit]+" foundation");slot.innerHTML='<span class="sl-suit-guide" aria-hidden="true">'+suit+'</span>';slot.addEventListener("click",function(){slTapFoundation(idx,suit,null)});wrap.appendChild(slot);
+          }
+          if(pile.length&&slHintMarks&&slHintMarks.dest.type==="foundation"&&slHintMarks.dest.pile===idx) wrap.firstChild.classList.add("sl-hint-dest");
+          slFoundationsEl.appendChild(wrap);
+        });
+      }
+      function slRenderTableau(){
+        slTableauEl.innerHTML="";
+        slState.tableau.forEach(function(pile,col){
+          var wrap=document.createElement("div");wrap.className="sl-tableau-pile";wrap.dataset.pile=col;
+          if(!pile.length){
+            var empty=document.createElement("button");empty.type="button";empty.className="sl-slot "+slDestHintClass("tableau",col);empty.setAttribute("aria-label","Empty tableau column "+(col+1));empty.addEventListener("click",function(){slMoveSelectionToTableau(col)});wrap.appendChild(empty);
+          }
+          var downSeen=0,upSeen=0;
+          pile.forEach(function(card,index){
+            var top;
+            if(card.up){top=(downSeen*10)+(upSeen*slClampOffset());upSeen++}else{top=downSeen*10;downSeen++}
+            var cls="sl-tableau-card "+(card.up?"":"sl-face-down ");
+            if(slIsSelected("tableau",col,index)) cls+=" sl-selected";
+            cls+=" "+slSourceHintClass("tableau",col,index);
+            var el=slCardButton(card,cls,card.up?function(){slTapTableauCard(col,index,card)}:null);
+            el.style.top=top+"px";el.style.zIndex=String(index+1);
+            if(slHintMarks&&slHintMarks.dest.type==="tableau"&&slHintMarks.dest.pile===col&&index===pile.length-1) el.classList.add("sl-hint-dest");
+            wrap.appendChild(el);
+          });
+          slTableauEl.appendChild(wrap);
+        });
+      }
+      function slClampOffset(){return Math.max(17,Math.min(29,window.innerWidth*.055))}
+      function slDrawStock(){
+        if(slState.stock.length){
+          slSaveState();slClearTransient();var card=slState.stock.pop();card.up=true;slState.waste.push(card);slRotateTip();slRender();
+        }else if(slState.waste.length){
+          slSaveState();slClearTransient();
+          while(slState.waste.length){var c=slState.waste.pop();c.up=false;slState.stock.push(c)}
+          slRotateTip();slRender();
+        }
+      }
+      function slTapCard(src,card){
+        var now=Date.now();
+        if(slLastTap.id===card.id&&now-slLastTap.time<360){slLastTap={id:null,time:0};slAutoFoundation(src);return}
+        slLastTap={id:card.id,time:now};
+        if(slSelection){
+          if(slSameSource(slSelection,src)){slSelection=null;slRender();return}
+          if(src.type==="foundation"){slMoveSelectionToFoundation(src.pile,card.suit);return}
+        }
+        slSelection=src;slHintMarks=null;slRender();
+      }
+      function slTapFoundation(idx,suit,card){
+        if(slSelection){slMoveSelectionToFoundation(idx,suit);return}
+        if(card) slTapCard({type:"foundation",pile:idx,index:slState.foundations[suit].length-1},card);
+      }
+      function slTapTableauCard(col,index,card){
+        if(!card.up)return;
+        var src={type:"tableau",pile:col,index:index};
+        var now=Date.now();
+        if(slLastTap.id===card.id&&now-slLastTap.time<360&&index===slState.tableau[col].length-1){slLastTap={id:null,time:0};slAutoFoundation(src);return}
+        slLastTap={id:card.id,time:now};
+        if(slSelection){
+          if(slSameSource(slSelection,src)){slSelection=null;slRender();return}
+          if(slMoveSelectionToTableau(col))return;
+          return;
+        }
+        if(slValidFaceupRun(slState.tableau[col].slice(index))){slSelection=src;slHintMarks=null;slRender()}
+      }
+      function slSameSource(a,b){return a.type===b.type&&a.pile===b.pile&&a.index===b.index}
+      function slValidFaceupRun(cards){
+        if(!cards.length||!cards[0].up)return false;
+        for(var i=0;i<cards.length-1;i++) if(cards[i].rank!==cards[i+1].rank+1||slCardColor(cards[i])===slCardColor(cards[i+1])) return false;
+        return true;
+      }
+      function slSelectedCards(){
+        if(!slSelection)return[];
+        if(slSelection.type==="waste")return[slState.waste[slState.waste.length-1]];
+        if(slSelection.type==="foundation"){
+          var suit=slSUITS[slSelection.pile],p=slState.foundations[suit];return p.length?[p[p.length-1]]:[];
+        }
+        return slState.tableau[slSelection.pile].slice(slSelection.index);
+      }
+      function slCanPlaceTableau(card,pile){
+        if(!pile.length)return card.rank===13;
+        var dest=pile[pile.length-1];return dest.up&&dest.rank===card.rank+1&&slCardColor(dest)!==slCardColor(card);
+      }
+      function slCanPlaceFoundation(card,suit,pile){return card.suit===suit&&card.rank===pile.length+1}
+      function slRemoveSelected(){
+        var cards;
+        if(slSelection.type==="waste") cards=[slState.waste.pop()];
+        else if(slSelection.type==="foundation"){var suit=slSUITS[slSelection.pile];cards=[slState.foundations[suit].pop()]}
+        else cards=slState.tableau[slSelection.pile].splice(slSelection.index);
+        return cards;
+      }
+      function slFlipExposed(){
+        slState.tableau.forEach(function(p){if(p.length&&!p[p.length-1].up)p[p.length-1].up=true});
+      }
+      function slMoveSelectionToTableau(col){
+        if(!slSelection)return false;
+        if(slSelection.type==="tableau"&&slSelection.pile===col)return false;
+        var cards=slSelectedCards();if(!cards.length||!slCanPlaceTableau(cards[0],slState.tableau[col]))return false;
+        slSaveState();var moved=slRemoveSelected();slState.tableau[col]=slState.tableau[col].concat(moved);slFlipExposed();slClearTransient();slRotateTip();slRender();return true;
+      }
+      function slMoveSelectionToFoundation(idx,suit){
+        if(!slSelection)return false;
+        var cards=slSelectedCards();if(cards.length!==1||!slCanPlaceFoundation(cards[0],suit,slState.foundations[suit]))return false;
+        slSaveState();var moved=slRemoveSelected()[0];slState.foundations[suit].push(moved);slFlipExposed();slClearTransient();slRotateTip();slRender();return true;
+      }
+      function slAutoFoundation(src){
+        var card;
+        if(src.type==="waste")card=slState.waste[slState.waste.length-1];
+        else if(src.type==="tableau"&&src.index===slState.tableau[src.pile].length-1)card=slState.tableau[src.pile][src.index];
+        else if(src.type==="foundation")return false;
+        if(!card)return false;
+        var idx=slSUITS.indexOf(card.suit),pile=slState.foundations[card.suit];
+        if(!slCanPlaceFoundation(card,card.suit,pile))return false;
+        slSelection=src;return slMoveSelectionToFoundation(idx,card.suit);
+      }
+      function slUndo(){
+        if(!slHistory.length)return;slState=slHistory.pop();slClearTransient();slCelebration.classList.remove("sl-show");slRender();
+      }
+      function slFindHint(){
+        var card,idx,col,dest;
+        if(slState.waste.length){
+          card=slState.waste[slState.waste.length-1];idx=slSUITS.indexOf(card.suit);
+          if(slCanPlaceFoundation(card,card.suit,slState.foundations[card.suit]))return{source:{type:"waste",pile:0},dest:{type:"foundation",pile:idx}};
+          for(dest=0;dest<7;dest++)if(slCanPlaceTableau(card,slState.tableau[dest]))return{source:{type:"waste",pile:0},dest:{type:"tableau",pile:dest}};
+        }
+        for(col=0;col<7;col++){
+          var p=slState.tableau[col];if(!p.length)continue;card=p[p.length-1];idx=slSUITS.indexOf(card.suit);
+          if(card.up&&slCanPlaceFoundation(card,card.suit,slState.foundations[card.suit]))return{source:{type:"tableau",pile:col,index:p.length-1},dest:{type:"foundation",pile:idx}};
+        }
+        for(col=0;col<7;col++){
+          var sourcePile=slState.tableau[col];
+          for(var start=0;start<sourcePile.length;start++){
+            card=sourcePile[start];if(!card.up||!slValidFaceupRun(sourcePile.slice(start)))continue;
+            for(dest=0;dest<7;dest++)if(dest!==col&&slCanPlaceTableau(card,slState.tableau[dest]))return{source:{type:"tableau",pile:col,index:start},dest:{type:"tableau",pile:dest}};
+          }
+        }
+        for(idx=0;idx<4;idx++){
+          var fp=slState.foundations[slSUITS[idx]];if(!fp.length)continue;card=fp[fp.length-1];
+          for(dest=0;dest<7;dest++)if(slCanPlaceTableau(card,slState.tableau[dest]))return{source:{type:"foundation",pile:idx},dest:{type:"tableau",pile:dest}};
+        }
+        if(slState.stock.length||slState.waste.length)return{source:{type:"stock",pile:0},dest:{type:"stock",pile:0}};
+        return null;
+      }
+      function slShowHint(){
+        slSelection=null;slHintMarks=slFindHint();
+        if(slHintMarks&&slHintMarks.source.type==="stock"){
+          slRender();var target=slStockEl.firstChild;if(target){target.classList.add("sl-hint-source");target.classList.add("sl-hint-dest")}
+        }else slRender();
+        if(!slHintMarks){document.getElementById("sl-tipText").textContent="You've checked every path. A fresh game is always okay."}
+      }
+      function slRotateTip(){slTipIndex=(slTipIndex+1)%slTips.length;document.getElementById("sl-tipText").textContent=slTips[slTipIndex]}
+      var slWon=false;
+      function slCheckWin(){
+        var total=slSUITS.reduce(function(sum,s){return sum+slState.foundations[s].length},0);
+        if(total===52){slWin()}
+      }
+      function slWin(){
+        if(slWon)return; slWon=true;
+        earnDD(20,8);
+        slCelebration.classList.add("sl-show");
+        setTimeout(function(){document.getElementById("sl-playAgainBtn").focus()},20);
+      }
+      function slInit(){
+        slStockEl=document.getElementById("sl-stock");
+        slWasteEl=document.getElementById("sl-waste");
+        slFoundationsEl=document.getElementById("sl-foundations");
+        slTableauEl=document.getElementById("sl-tableau");
+        slUndoBtn=document.getElementById("sl-undoBtn");
+        slCelebration=document.getElementById("sl-celebration");
+        slUndoBtn.addEventListener("click",slUndo);
+        document.getElementById("sl-newBtn").addEventListener("click",slNewGame);
+        document.getElementById("sl-hintBtn").addEventListener("click",slShowHint);
+        document.getElementById("sl-playAgainBtn").addEventListener("click",slNewGame);
+        document.getElementById("sl-backBtn").onclick=function(){ showArcadeGame("arcade"); };
+        window.addEventListener("resize",slOnResize);
+        slNewGame();
+      }
+    
+      function slOnResize(){ if(slStockEl) slRender(); }
+      function slTeardown(){ window.removeEventListener("resize",slOnResize); slStockEl=slWasteEl=slFoundationsEl=slTableauEl=slUndoBtn=slCelebration=null; }
+
 document.addEventListener("keydown",function(e){
   if(TAB!=="play"||arcadeGame!=="sudoku"||!sdEl) return;
   if(/^[1-9]$/.test(e.key)){ sdEnterNumber(Number(e.key)); }
