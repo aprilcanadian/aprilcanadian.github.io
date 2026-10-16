@@ -769,15 +769,20 @@ const SHOP = [
 {id:"bandana-diamond", emoji:"💎", name:"Diamond Bandana", desc:"For the richest list-keeper.", price:600, type:"bandana", color:"#9FD8E8"},
 {id:"bandana-royal", emoji:"👑", name:"Royal Bandana", desc:"Duke's fanciest look.", price:1000, type:"bandana", color:"#8B5CF6"},
 {id:"bone", emoji:"🦴", name:"Tasty Bone", desc:"Duke's favourite chew. Tummy +12, happiness +8.", price:8, type:"happy", full:12, happy:8},
-{id:"water", emoji:"💧", name:"Fresh Water", desc:"Cool and refreshing. Tummy +5, happiness +4.", price:3, type:"happy", full:5, happy:4},
+{id:"water", emoji:"💧", name:"Fresh Water", desc:"Cool and refreshing. Tummy +5, happiness +4, thirst +35.", price:3, type:"happy", full:5, happy:4, thirst:35},
 {id:"earscratch", emoji:"👂", name:"Ear Scratch", desc:"The spot behind the ears. Happiness +10.", price:5, type:"happy", happy:10},
-{id:"playtime", emoji:"🎾", name:"Play Time", desc:"A fun game together. Happiness +14.", price:6, type:"happy", happy:14},
+{id:"playtime", emoji:"🎾", name:"Play Time", desc:"A fun game together. Happiness +14, play +25.", price:6, type:"happy", happy:14, play:25},
+{id:"bath", emoji:"🛁", name:"Bubble Bath", desc:"A warm sudsy bath. Fresh & Tidy +35.", price:5, type:"happy", groom:35},
+{id:"brush", emoji:"🖌️", name:"Brush Duke", desc:"A good brushing. Fresh & Tidy +15.", price:2, type:"happy", groom:15},
+{id:"swim", emoji:"🏊", name:"Lake Swim", desc:"A splashy lake swim! Fresh & Tidy +20, play +15.", price:6, type:"happy", groom:20, play:15},
+{id:"vet", emoji:"✨", name:"Vet Check-up", desc:"A gentle full check-up. Every bar +15.", price:25, type:"happy", happy:0, all:15},
 ];
 const PET_SAYS = ["Woof! One check at a time.","You are doing great.","Lists make brains happy.","Duke believes in you!","Small steps, big harvest."];
 const PET_LOW = ["Duke is feeling a bit low... a treat would help!","Duke misses you. Check something off together?","A snack from the shop would cheer Duke up."];
 const BAD_SAYS = ["It\u2019s okay. Rest now. \uD83D\uDCA4","Duke is right here. No rush.","Soft day. Breathe with Duke."];
 const HUNGRY_SAYS = ["Duke's tummy is rumbling...","Feed Duke — he's hungry!","Duke is dreaming of crunchy biscuits..."];
 const THIRSTY_SAYS = ["Duke is thirsty...","A bowl of fresh water would be lovely.","Duke is dreaming of cool streams..."];
+const SCRUFFY_SAYS = ["Duke is feeling a bit scruffy...","A bubble bath or a lake swim would be lovely.","Duke is dreaming of splashing in the lake..."];
 function ageProgress(){ const d=S.careDays||0;
   if(S.dukeStage==="puppy") return {pct:Math.round(d/14*100), label:d+"/14"};
   if(S.dukeStage==="middle") return {pct:Math.round((d-14)/60*100), label:(d-14)+"/60"};
@@ -1806,7 +1811,7 @@ function dayStreak(){ let n=0; const d=new Date(); if(!(S.hist[dayStr(d)]>0)) d.
 let S = load() || {};
 const FIRST_LAUNCH = !localStorage.getItem(KEY); // captured before any save()
 if(S.hearts!==undefined && S.dd===undefined){ S.dd=S.hearts; S.lifetime=S.hearts; delete S.hearts; }
-S = Object.assign({dd:0, lifetime:0, streak:0, streakDay:null, lastDay:null, happiness:70, fullness:70, thirst:70, play:70,
+S = Object.assign({dd:0, lifetime:0, streak:0, streakDay:null, lastDay:null, happiness:70, fullness:70, thirst:70, play:70, grooming:70,
   dukeStage:"puppy", careDays:0, careDay:null,
   checks:{}, doneToday:{}, goals:[], completedLists:0, custom:[], hist:{}, reminders:[], remFired:{},
   lowSensory:false, badDay:false, tucked:false, bestBlockDrop:0,
@@ -1824,6 +1829,7 @@ S.inv = Object.assign({treats:{}, owned:[], bandana:null}, S.inv||{});
     S.fullness = Math.max(0, S.fullness - 15);
     S.thirst = Math.max(0, (S.thirst===undefined?70:S.thirst) - 15);
     S.play = Math.max(0, (S.play===undefined?70:S.play) - 10);
+    S.grooming = Math.max(0, (S.grooming===undefined?70:S.grooming) - 10);
     S.lastDay=t; save();
   }
 })();
@@ -1842,7 +1848,7 @@ function earnDD(n, happy){ S.dd+=n; S.lifetime+=n;
 function paintHeader(){ document.getElementById("hdr-dd").textContent="💵 "+S.dd;
   document.getElementById("hdr-streak").textContent="🔥 "+S.streak;
   const hp=document.getElementById("hdr-pet"); if(hp){ hp.style.borderColor=bandanaColor(); hp.src=petImg("idle"); } }
-function petSay(){ const a=S.badDay?BAD_SAYS:(S.fullness<30?HUNGRY_SAYS:((S.thirst||70)<30?THIRSTY_SAYS:(S.happiness<30?PET_LOW:PET_SAYS))); return a[Math.floor(Math.random()*a.length)]; }
+function petSay(){ const a=S.badDay?BAD_SAYS:(S.fullness<30?HUNGRY_SAYS:((S.thirst||70)<30?THIRSTY_SAYS:((S.grooming||70)<30?SCRUFFY_SAYS:(S.happiness<30?PET_LOW:PET_SAYS)))); return a[Math.floor(Math.random()*a.length)]; }
 function burst(x,y,txt){ const s=document.createElement("div"); s.className="heart-burst"; s.textContent=txt||"💵";
   s.style.left=(x-10)+"px"; s.style.top=(y-20)+"px"; document.body.appendChild(s); setTimeout(()=>s.remove(),1000); }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -1915,6 +1921,7 @@ function vHome(){
   '<div class="level-row"><div class="level-name">'+dukeStatus()+'</div><div class="bar"><div style="width:'+S.fullness+'%"></div></div><div class="level-name">'+S.fullness+'</div></div>'+
   '<div class="level-row"><div class="level-name">💧 Thirst</div><div class="bar"><div style="width:'+(S.thirst===undefined?70:S.thirst)+'%"></div></div><div class="level-name">'+(S.thirst===undefined?70:S.thirst)+'</div></div>'+
   '<div class="level-row"><div class="level-name">🎾 Play</div><div class="bar"><div style="width:'+(S.play===undefined?70:S.play)+'%"></div></div><div class="level-name">'+(S.play===undefined?70:S.play)+'</div></div>'+
+  '<div class="level-row"><div class="level-name">🧼 Fresh &amp; Tidy</div><div class="bar"><div style="width:'+(S.grooming===undefined?70:S.grooming)+'%"></div></div><div class="level-name">'+(S.grooming===undefined?70:S.grooming)+'</div></div>'+
   '<div class="level-row"><div class="level-name">🌱 Age</div><div class="bar"><div style="width:'+ageProgress().pct+'%"></div></div><div class="level-name">'+ageProgress().label+'</div></div>'+
   '<div style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center">💵 '+S.lifetime+' earned all time</div>'+
   '<div class="stats"><div class="stat"><b>'+todayChecks+'</b><span>checks today</span></div>'+
@@ -2108,9 +2115,11 @@ function vShop(){
     if(S.dd<s.price)return;
     S.dd-=s.price;
     S.fullness=Math.min(100,S.fullness+(s.full||0));
-    S.happiness=Math.min(100,S.happiness+s.happy);
-    if(s.id==="water") S.thirst=Math.min(100,(S.thirst===undefined?70:S.thirst)+35);
-    if(s.id==="playtime") S.play=Math.min(100,(S.play===undefined?70:S.play)+25);
+    S.happiness=Math.min(100,S.happiness+(s.happy||0));
+    S.thirst=Math.min(100,(S.thirst===undefined?70:S.thirst)+(s.thirst||0));
+    S.play=Math.min(100,(S.play===undefined?70:S.play)+(s.play||0));
+    S.grooming=Math.min(100,(S.grooming===undefined?70:S.grooming)+(s.groom||0));
+    if(s.all)["fullness","happiness","thirst","play","grooming"].forEach(k=>{ S[k]=Math.min(100,(S[k]===undefined?70:S[k])+s.all); });
     markCareDay(); save(); burst(e.clientX,e.clientY,s.emoji); vShop(); });
 }
 function vAbout(){
@@ -2118,7 +2127,7 @@ function vAbout(){
   '<p><b>Duke: The Autistic Book of Lists Virtual Pet</b> turns the checklists from <i>The Autistic Book of Lists: Because Lists Work</i> into a game. '+
   'Check things off, earn <b>Duke Dollars</b> (no need to finish a whole list — every single check pays!), keep your streak alive, '+
   'and spend your Duke Dollars in the shop on treats, toys, a comfy bed, new bandanas, and little happiness boosts like bones, ear scratches, play time, and fresh water for Duke.</p>'+
-  '<p>Duke\u2019s tummy empties, he gets thirsty, and his happiness and playfulness dip a little each day — buy treats and fresh water in the shop to keep him full and quenched, play with his toys, and check off lists to keep him happy. Care for him day after day and he\u2019ll grow from a puppy into a wise old friend.</p>'+
+  '<p>Duke\u2019s tummy empties, he gets thirsty and a bit scruffy, and his happiness and playfulness dip a little each day — buy treats, fresh water, bubble baths and lake swims in the shop to keep him full, quenched and clean, play with his toys, and check off lists to keep him happy. Care for him day after day and he\u2019ll grow from a puppy into a wise old friend.</p>'+
   '<p>Written by <b>April Griffin</b> and <b>Janet Sebelius</b> — two autistic artists who believe lists reduce anxiety, '+
   'lighten executive-function load, and turn \u201Call the things\u201D into one doable next step.</p>'+
   '<p style="color:var(--muted);font-size:13px">Version 2.4.0 — '+allLists().length+' lists and counting. You can add your own!</p></div>'+
