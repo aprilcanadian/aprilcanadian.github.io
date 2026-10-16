@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.aprilgriffinheartart.duke",
+        "sha256_cert_fingerprints": ["B3:30:50:1D:98:E3:46:AB:EF:6D:FB:35:20:2C:AB:AB:D4:C5:B3:53:63:E7:9B:D1:C9:2C:3A:B3:F2:1D:AD:3E"]
+      }
+    }]
