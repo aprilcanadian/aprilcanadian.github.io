@@ -772,9 +772,9 @@ const SHOP = [
 {id:"water", emoji:"💧", name:"Fresh Water", desc:"Cool and refreshing. Tummy +5, happiness +4, thirst +35.", price:3, type:"happy", full:5, happy:4, thirst:35},
 {id:"earscratch", emoji:"👂", name:"Ear Scratch", desc:"The spot behind the ears. Happiness +10.", price:5, type:"happy", happy:10},
 {id:"playtime", emoji:"🎾", name:"Play Time", desc:"A fun game together. Happiness +14, play +25.", price:6, type:"happy", happy:14, play:25},
-{id:"bath", emoji:"🛁", name:"Bubble Bath", desc:"A warm sudsy bath. Fresh & Tidy +35.", price:5, type:"happy", groom:35},
-{id:"brush", emoji:"🖌️", name:"Brush Duke", desc:"A good brushing. Fresh & Tidy +15.", price:2, type:"happy", groom:15},
-{id:"swim", emoji:"🏊", name:"Lake Swim", desc:"A splashy lake swim! Fresh & Tidy +20, play +15.", price:6, type:"happy", groom:20, play:15},
+{id:"bath", emoji:"🛁", name:"Bubble Bath", desc:"A warm sudsy bath. Fresh & Tidy +35.", price:0, type:"happy", groom:35},
+{id:"brush", emoji:"🖌️", name:"Brush Duke", desc:"A good brushing. Fresh & Tidy +15.", price:0, type:"happy", groom:15},
+{id:"swim", emoji:"🏊", name:"Lake Swim", desc:"A splashy lake swim! Fresh & Tidy +20, play +15.", price:0, type:"happy", groom:20, play:15},
 {id:"vet", emoji:"✨", name:"Vet Check-up", desc:"A gentle full check-up. Every bar +15.", price:25, type:"happy", happy:0, all:15},
 ];
 const PET_SAYS = ["Woof! One check at a time.","You are doing great.","Lists make brains happy.","Duke believes in you!","Small steps, big harvest."];
@@ -2069,7 +2069,7 @@ function vShop(){
         if(qty>0) h+='<button class="buy" data-feed="'+s.id+'">Feed ('+qty+')</button>';
         h+='<button class="buy" data-buy="'+s.id+'">💵 '+s.price+'</button>';
       }else if(s.type==="happy"){
-        h+='<button class="buy" data-happy="'+s.id+'"'+(S.dd<s.price?" disabled":"")+'>💵 '+s.price+'</button>';
+        h+='<button class="buy" data-happy="'+s.id+'"'+(S.dd<s.price?" disabled":"")+'>'+(s.price>0?("💵 "+s.price):"Free")+'</button>';
       }else if(owned){
         if(s.type==="bandana") h+='<button class="buy" data-wear="'+s.id+'">'+(S.inv.bandana===s.id?"Wearing ✓":"Wear")+'</button>';
         else if(s.type==="toy") h+='<button class="buy" data-play="'+s.id+'">Play</button>';
