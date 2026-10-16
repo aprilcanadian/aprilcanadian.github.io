@@ -757,6 +757,10 @@ const SHOP = [
 {id:"pupcake", emoji:"🧁", name:"Pupcake", desc:"Fills tummy +18, happiness +9.", price:10, type:"treat", happy:18},
 {id:"steak", emoji:"🥩", name:"Fancy Steak", desc:"Fills tummy +25, happiness +13.", price:15, type:"treat", happy:25},
 {id:"bed", emoji:"🛏️", name:"Comfy Bed", desc:"Duke sleeps better. Happiness drops slower each day.", price:50, type:"home"},
+{id:"foodbowl", emoji:"🍽️", name:"Food Bowl", desc:"Duke\u2019s tummy empties slower each day.", price:50, type:"home"},
+{id:"waterbowl", emoji:"💧", name:"Water Bowl", desc:"Duke gets thirsty slower each day.", price:50, type:"home"},
+{id:"toybasket", emoji:"🧺", name:"Toy Basket", desc:"Duke stays playful longer each day.", price:50, type:"home"},
+{id:"blanket", emoji:"🛋️", name:"Cozy Blanket", desc:"Duke stays fresh and tidy longer each day.", price:50, type:"home"},
 {id:"ball", emoji:"⚽", name:"Bouncy Ball", desc:"Play anytime for +6 happiness.", price:20, type:"toy", happy:6},
 {id:"squeak", emoji:"🐭", name:"Squeaky Mouse", desc:"Play anytime for +8 happiness.", price:30, type:"toy", happy:8},
 {id:"bandana-red", emoji:"🔴", name:"Red Bandana", desc:"A sharp new look for Duke.", price:25, type:"bandana", color:"#D64545"},
@@ -1826,10 +1830,10 @@ S.inv = Object.assign({treats:{}, owned:[], bandana:null}, S.inv||{});
     S.badDay=false;
     const decay = S.inv.owned.includes("bed") ? 5 : 10;
     S.happiness = Math.max(0, S.happiness - decay);
-    S.fullness = Math.max(0, S.fullness - 15);
-    S.thirst = Math.max(0, (S.thirst===undefined?70:S.thirst) - 15);
-    S.play = Math.max(0, (S.play===undefined?70:S.play) - 10);
-    S.grooming = Math.max(0, (S.grooming===undefined?70:S.grooming) - 10);
+    S.fullness = Math.max(0, S.fullness - (S.inv.owned.includes("foodbowl")?10:15));
+    S.thirst = Math.max(0, (S.thirst===undefined?70:S.thirst) - (S.inv.owned.includes("waterbowl")?10:15));
+    S.play = Math.max(0, (S.play===undefined?70:S.play) - (S.inv.owned.includes("toybasket")?5:10));
+    S.grooming = Math.max(0, (S.grooming===undefined?70:S.grooming) - (S.inv.owned.includes("blanket")?5:10));
     S.lastDay=t; save();
   }
 })();
@@ -1915,6 +1919,7 @@ function vHome(){
   ((S.thirst===undefined?70:S.thirst)<30?'<div style="font-size:13px;color:var(--muted);margin-top:4px">\U0001F4A7 Duke\u2019s thirsty\u2026 fresh water from the shop would help!</div>':"")+
   ((S.play===undefined?70:S.play)<25?'<div style="font-size:13px;color:var(--muted);margin-top:4px">\U0001F3BE Duke wants to play! Grab a toy in the shop.</div>':"")+
   (S.inv.owned.includes("bed")?'<div style="font-size:13px;color:var(--muted)">🛏️ Duke loves his comfy bed</div>':"")+
+  (function(){ const hs=SHOP.filter(x=>x.type==="home"&&S.inv.owned.includes(x.id)&&x.id!=="bed"); return hs.length?'<div style="font-size:13px;color:var(--muted)">🏠 '+hs.map(x=>x.emoji).join(" ")+'</div>':""; })()+
   (toys.length?'<div style="font-size:13px;color:var(--muted);margin-top:4px">🧸 '+toys.map(id=>SHOP.find(s=>s.id===id).emoji).join(" ")+'</div>':"")+
   '</div>'+
   '<div class="level-row"><div class="level-name">😊 Happiness</div><div class="bar"><div style="width:'+S.happiness+'%"></div></div><div class="level-name">'+S.happiness+'</div></div>'+
